@@ -136,9 +136,8 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/pioneer_mrs_node.cpp)
-add_executable(robot src/robot.cpp)
+add_executable(pioneer src/pioneer.cpp)
 add_executable(teleop_hp src/teleop_hp.cpp)
-add_executable(pose_cmd src/pose_cmd.cpp)
 add_executable(trajectory src/trajectory.cpp)
 
 ## Rename C++ executable without prefix
@@ -155,11 +154,7 @@ add_executable(trajectory src/trajectory.cpp)
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(robot 
-   ${catkin_LIBRARIES}
-)
-
-target_link_libraries(pose_cmd 
+target_link_libraries(pioneer 
    ${catkin_LIBRARIES}
 )
 

@@ -29,7 +29,7 @@ TeleopRosAria::TeleopRosAria():
 {
   nh_.param("scale_linear_x", x_scale_, x_scale_);
   nh_.param("scale_linear_y", y_scale_, y_scale_);
-  vel_pub_ = nh_.advertise<geometry_msgs::Vector3>("RosAria/cmd_vel_hp", 1);
+  vel_pub_ = nh_.advertise<geometry_msgs::Vector3>("cmd_vel_hp", 1);
 }
 int kfd = 0;
 struct termios cooked, raw;
