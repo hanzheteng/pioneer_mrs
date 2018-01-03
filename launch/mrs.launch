@@ -1,0 +1,26 @@
+<launch>
+	<include file="$(find pioneer_mrs)/config/robots.machine" />
+
+	<include file="$(find pioneer_mrs)/launch/commander.launch" ns="commander"/>
+
+	<include file="$(find pioneer_mrs)/launch/robot.launch" ns="robot1">
+		<arg name="machine" value="robot1" />
+	</include>
+
+	<include file="$(find pioneer_mrs)/launch/robot.launch" ns="robot2">
+		<arg name="machine" value="robot2" />
+	</include>
+
+	<include file="$(find pioneer_mrs)/launch/robot.launch" ns="robot3">
+		<arg name="machine" value="robot3" />
+	</include>
+
+	<include file="$(find pioneer_mrs)/launch/robot.launch" ns="robot4">
+		<arg name="machine" value="robot4" />
+	</include>
+
+	<include file="$(find pioneer_mrs)/launch/robot.launch" ns="robot5">
+		<arg name="machine" value="robot5" />
+	</include>
+
+</launch>

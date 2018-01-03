@@ -1,0 +1,11 @@
+<launch>
+	<arg name="machine" default="robot1">
+	<include file="$(find pioneer_mrs)/config/robots.machine" />
+
+	<include file="$(find pioneer_mrs)/launch/commander.launch" ns="commander"/>
+
+	<include file="$(find pioneer_mrs)/launch/robot.launch" ns="$(arg machine)">
+		<arg name="machine" value="$(arg machine)" />
+	</include>
+
+</launch>

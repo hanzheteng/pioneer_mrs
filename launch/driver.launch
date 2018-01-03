@@ -1,9 +1,0 @@
-<launch>
-	<group ns="robot1">
-	<node name="RosAria"  pkg="rosaria" type="RosAria">
-		<param name="port" type="string" value="/dev/ttyS0"/>
-	</node>
-	<node name="teleop_hp" pkg="pioneer_mrs" type="teleop_hp"/>
-	<node name="pioneer" pkg="pioneer_mrs" type="pioneer"/>
-	</group>
-</launch>

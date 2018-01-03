@@ -1,0 +1,3 @@
+<launch>
+	<node name="teleop_hp" pkg="pioneer_mrs" type="teleop_hp" machine="commander"/>
+</launch>

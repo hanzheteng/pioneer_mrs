@@ -13,7 +13,6 @@ class Pioneer
   private:
     ros::Subscriber sub_vel_hp;
     ros::Subscriber sub_pose;
-    ros::Subscriber sub_pos_cmd;
     ros::Publisher pub_vel;
     ros::Publisher pub_vel_hp;
 
@@ -24,7 +23,6 @@ class Pioneer
     //pose info, theta from -3.14 to 3.14, left side is positive
     geometry_msgs::Pose2D pose; // center
     geometry_msgs::Pose2D pose_hp; // handpoint
-    geometry_msgs::Pose2D pose_cmd; // handpoint
 
     const float HANDPOINT_OFFSET = 0.25;  //by meter: 10in = 0.25m
 
@@ -34,7 +32,6 @@ class Pioneer
     {
         sub_vel_hp = nh.subscribe("RosAria/cmd_vel_hp", 1, &Pioneer::handPointCallBack, this);
         sub_pose = nh.subscribe("RosAria/pose", 1, &Pioneer::poseCallBack, this);
-        sub_pos_cmd = nh.subscribe("RosAria/cmd_pos", 1, &Pioneer::posCmdCallBack, this);
 
         pub_vel = nh.advertise<geometry_msgs::Twist>("RosAria/cmd_vel", 1);
     }
@@ -89,26 +86,9 @@ class Pioneer
       pub_vel.publish(this->vel);
     }
 
-    // functions defined by users
-
-    void posCmdCallBack(const geometry_msgs::Pose2D& msg) 
-    {
-      this->pose_cmd = msg;
-      ROS_INFO_STREAM("pos_x_cmd="<<this->pose_cmd.x<<"; pos_y_cmd="<<this->pose_cmd.y<<";\n");
-    }
-
     geometry_msgs::Pose2D getPoseHp()
     {
       return this->pose_hp;
-    }
-
-    geometry_msgs::Pose2D getPoseDiff()
-    {
-      geometry_msgs::Pose2D diff;
-      diff.x = pose_cmd.x - pose.x;
-      diff.y = pose_cmd.y - pose.y;
-      diff.theta = pose.theta - pose_cmd.theta;
-      return diff;
     }
 
 };
