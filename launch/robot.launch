@@ -1,6 +1,8 @@
 <launch>
+	<arg name="machine" />
+
 	<node name="RosAria" pkg="rosaria" type="RosAria" machine="$(arg machine)">
 		<param name="port" type="string" value="/dev/ttyS0" />
 	</node>
-	<node name="pioneer" pkg="pioneer_mrs" type="pioneer" machine="$(arg machine)"/>
+	<node name="pioneer" pkg="pioneer_mrs" type="pioneer" output="screen" launch-prefix="xterm -e" machine="$(arg machine)"/>
 </launch>

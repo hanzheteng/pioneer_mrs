@@ -1,9 +1,9 @@
 <launch>
-	<machine name="commander" address="hzteng" env-loader="$(find pioneer_mrs)/config/env.sh" />
-	<machine name="robot1" address="robot1" env-loader="$(find pioneer_mrs)/config/env.sh" user="hao" />
-	<machine name="robot2" address="robot2" env-loader="$(find pioneer_mrs)/config/env.sh" user="hao" />
-	<machine name="robot3" address="robot3" env-loader="$(find pioneer_mrs)/config/env.sh" user="hao" />
-	<machine name="robot4" address="robot4" env-loader="$(find pioneer_mrs)/config/env.sh" user="hao" />
-	<machine name="robot5" address="robot5" env-loader="$(find pioneer_mrs)/config/env.sh" user="hao" />
+	<machine name="commander" address="hzteng" env-loader="$(find pioneer_mrs)/config/env.bash" />
+	<machine name="robot1" address="robot1" env-loader="$(find pioneer_mrs)/config/env.bash" user="hao" />
+	<machine name="robot2" address="robot2" env-loader="$(find pioneer_mrs)/config/env.bash" user="hao" />
+	<machine name="robot3" address="robot3" env-loader="$(find pioneer_mrs)/config/env.bash" user="hao" />
+	<machine name="robot4" address="robot4" env-loader="$(find pioneer_mrs)/config/env.bash" user="hao" />
+	<machine name="robot5" address="robot5" env-loader="$(find pioneer_mrs)/config/env.bash" user="hao" />
 </launch>
 
