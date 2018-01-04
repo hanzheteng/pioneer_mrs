@@ -1,9 +1,8 @@
 <launch>
 	<arg name="machine" default="robot5" />
+	<!--remap from="/commander/cmd_vel_hp" to="/$(arg machine)/RosAria/cmd_vel_hp" /-->
 
 	<include file="$(find pioneer_mrs)/config/robots.machine" />
-
-	<include file="$(find pioneer_mrs)/launch/commander.launch" ns="commander"/>
 
 	<include file="$(find pioneer_mrs)/launch/robot.launch" ns="$(arg machine)">
 		<arg name="machine" value="$(arg machine)" />
