@@ -87,6 +87,7 @@ void TeleopRosAria::keyLoop()
   puts("---------------------------");
   puts("Use arrow keys to move the robot.");
   puts("Press the space bar to stop the robot.");
+  puts("Press number 1-5 to switch the robot.");
   puts("Press q to stop the program");
   for(;;)
   {
