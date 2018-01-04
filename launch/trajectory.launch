@@ -1,0 +1,8 @@
+<launch>
+	<arg name="machine" />
+
+	<node name="traj_$(arg machine)" pkg="pioneer_mrs" type="trajectory" output="screen" ns="commander">
+		<remap from="/commander/trajectory" to="/$(arg machine)/trajectory" />
+	</node>
+
+</launch>

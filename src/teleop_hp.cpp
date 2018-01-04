@@ -39,11 +39,11 @@ TeleopRosAria::TeleopRosAria():
 {
   nh_.param("scale_linear_x", x_scale_, x_scale_);
   nh_.param("scale_linear_y", y_scale_, y_scale_);
-  vel_pub_1 = nh_.advertise<geometry_msgs::Vector3>("/robot1/RosAria/cmd_vel_hp", 1);
-  vel_pub_2 = nh_.advertise<geometry_msgs::Vector3>("/robot2/RosAria/cmd_vel_hp", 1);
-  vel_pub_3 = nh_.advertise<geometry_msgs::Vector3>("/robot3/RosAria/cmd_vel_hp", 1);
-  vel_pub_4 = nh_.advertise<geometry_msgs::Vector3>("/robot4/RosAria/cmd_vel_hp", 1);
-  vel_pub_5 = nh_.advertise<geometry_msgs::Vector3>("/robot5/RosAria/cmd_vel_hp", 1);
+  vel_pub_1 = nh_.advertise<geometry_msgs::Vector3>("/robot1/cmd_vel_hp", 1);
+  vel_pub_2 = nh_.advertise<geometry_msgs::Vector3>("/robot2/cmd_vel_hp", 1);
+  vel_pub_3 = nh_.advertise<geometry_msgs::Vector3>("/robot3/cmd_vel_hp", 1);
+  vel_pub_4 = nh_.advertise<geometry_msgs::Vector3>("/robot4/cmd_vel_hp", 1);
+  vel_pub_5 = nh_.advertise<geometry_msgs::Vector3>("/robot5/cmd_vel_hp", 1);
 }
 
 int kfd = 0;
