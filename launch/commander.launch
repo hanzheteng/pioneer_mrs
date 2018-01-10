@@ -1,8 +1,6 @@
 <launch>
 	<group ns="commander">
-
-	<node name="teleop_hp" pkg="pioneer_mrs" type="teleop_hp" output="screen"/>
-
-	</group>
+		<node name="teleop_hp" pkg="pioneer_mrs" type="teleop_hp" output="screen"/>
+		</group>
 
 </launch>

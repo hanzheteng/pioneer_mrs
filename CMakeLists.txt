@@ -118,7 +118,6 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -154,6 +153,7 @@ add_executable(trajectory src/trajectory.cpp)
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+
 target_link_libraries(pioneer 
    ${catkin_LIBRARIES}
 )

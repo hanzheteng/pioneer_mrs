@@ -1,3 +1,36 @@
+/*
+ * teleop_pr2_keyboard
+ * Copyright (c) 2008, Willow Garage, Inc.
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the <ORGANIZATION> nor the names of its
+ *       contributors may be used to endorse or promote products derived from
+ *       this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+// Author: Kevin Watts
+// Modified by Hanzhe Teng
+
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <signal.h>
@@ -16,10 +49,10 @@
 #define KEYCODE_4 0x34
 #define KEYCODE_5 0x35
 
-class TeleopRosAria
+class TeleopHandpoint
 {
   public:
-    TeleopRosAria();
+    TeleopHandpoint();
     void keyLoop();
   private:
     ros::NodeHandle nh_;
@@ -31,7 +64,7 @@ class TeleopRosAria
     ros::Publisher vel_pub_5;
 };
 
-TeleopRosAria::TeleopRosAria():
+TeleopHandpoint::TeleopHandpoint():
   linear_x(0),
   linear_y(0),
   x_scale_(2.0),
@@ -60,13 +93,13 @@ void quit(int sig)
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "teleop_hp");
-  TeleopRosAria teleop_RosAria;
+  TeleopHandpoint teleop_hp;
   signal(SIGINT,quit);
-  teleop_RosAria.keyLoop();
+  teleop_hp.keyLoop();
   return(0);
 }
 
-void TeleopRosAria::keyLoop()
+void TeleopHandpoint::keyLoop()
 {
   char c;
   bool dirty=false;
