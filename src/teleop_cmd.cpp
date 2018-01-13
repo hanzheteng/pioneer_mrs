@@ -26,11 +26,10 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
+ ***
+ * Author: Kevin Watts
+ * Modified by Hanzhe Teng
  */
-
-// Author: Kevin Watts
-// Modified by Hanzhe Teng
-
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <signal.h>
@@ -49,10 +48,10 @@
 #define KEYCODE_4 0x34
 #define KEYCODE_5 0x35
 
-class TeleopHandpoint
+class TeleopKeyboard
 {
   public:
-    TeleopHandpoint();
+    TeleopKeyboard();
     void keyLoop();
   private:
     ros::NodeHandle nh_;
@@ -64,7 +63,7 @@ class TeleopHandpoint
     ros::Publisher vel_pub_5;
 };
 
-TeleopHandpoint::TeleopHandpoint():
+TeleopKeyboard::TeleopKeyboard():
   linear_x(0),
   linear_y(0),
   x_scale_(2.0),
@@ -93,13 +92,13 @@ void quit(int sig)
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "teleop_hp");
-  TeleopHandpoint teleop_hp;
+  TeleopKeyboard teleop_hp;
   signal(SIGINT,quit);
   teleop_hp.keyLoop();
   return(0);
 }
 
-void TeleopHandpoint::keyLoop()
+void TeleopKeyboard::keyLoop()
 {
   char c;
   bool dirty=false;
@@ -205,6 +204,7 @@ void TeleopHandpoint::keyLoop()
         return;
         break;
   	}
+		ROS_INFO("Welcome");
     geometry_msgs::Vector3 vel;
     vel.x = x_scale_*linear_x;
     vel.y = y_scale_*linear_y;
