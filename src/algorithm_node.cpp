@@ -182,7 +182,7 @@ void Algorithm::computeVelocity(double T)
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "algorithm");
+  ros::init(argc, argv, "algorithm_node");
   ros::NodeHandle nh;
   ros::NodeHandle nh_private("~");
   Algorithm* algorithm = new Algorithm(nh, nh_private);

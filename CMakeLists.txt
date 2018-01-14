@@ -55,6 +55,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(FILES
   CommunicationState.msg
+  MissionState.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -138,17 +139,17 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/pioneer_mrs_node.cpp)
-add_executable(algorithm
+add_executable(algorithm_node
   src/algorithm_node.cpp src/pioneer.cpp 
 )
-add_executable(handpoint
+add_executable(handpoint_node
   src/handpoint_node.cpp src/pioneer.cpp 
 )
-add_executable(trajectory
-  src/trajectory_cmd.cpp src/pioneer.cpp 
+add_executable(trajectory_node
+  src/trajectory_node.cpp src/pioneer.cpp
 )
-add_executable(teleop_hp
-  src/teleop_cmd.cpp
+add_executable(trajectory_cmd
+  src/trajectory_cmd.cpp
 )
 add_executable(comm_state_cmd
   src/comm_state_cmd.cpp
@@ -161,23 +162,23 @@ add_executable(comm_state_cmd
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(algorithm pioneer_mrs_generate_messages_cpp)
-add_dependencies(comm_state_cmd ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(algorithm_node pioneer_mrs_generate_messages_cpp)
+add_dependencies(comm_state_cmd pioneer_mrs_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(algorithm 
+target_link_libraries(algorithm_node
    ${catkin_LIBRARIES}
 )
-target_link_libraries(handpoint 
+target_link_libraries(handpoint_node
    ${catkin_LIBRARIES}
 )
-target_link_libraries(trajectory 
+target_link_libraries(trajectory_node
    ${catkin_LIBRARIES}
 )
-target_link_libraries(teleop_hp 
+target_link_libraries(trajectory_cmd
    ${catkin_LIBRARIES}
 )
 target_link_libraries(comm_state_cmd

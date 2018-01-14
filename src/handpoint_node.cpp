@@ -59,7 +59,7 @@ void HandPoint::cmdVelHandPointCallBack(const geometry_msgs::Vector3& msg)
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "handpoint");
+  ros::init(argc, argv, "handpoint_node");
   ros::NodeHandle nh;
   ros::NodeHandle nh_private("~");
 

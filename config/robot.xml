@@ -5,7 +5,11 @@
 	<node name="RosAria" pkg="rosaria" type="RosAria" machine="$(arg machine)">
 		<param name="port" type="string" value="/dev/ttyS0" />
 		</node>
-	<node name="pioneer" pkg="pioneer_mrs" type="pioneer" output="screen" machine="$(arg machine)">
+	<node name="handpoint_node" pkg="pioneer_mrs" type="handpoint_node" output="screen" machine="$(arg machine)">
+	    <param name="machine" type="string" value="$(arg machine)"/>
+		<param name="pose" type="string" value="$(arg pose)"/>
+		</node>
+	<node name="trajectory_node" pkg="pioneer_mrs" type="trajectory_node" output="screen" machine="$(arg machine)">
 	    <param name="machine" type="string" value="$(arg machine)"/>
 		<param name="pose" type="string" value="$(arg pose)"/>
 		</node>

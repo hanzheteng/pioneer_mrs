@@ -4,7 +4,7 @@
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "trajectory");
+  ros::init(argc, argv, "trajectory_cmd");
   ros::NodeHandle nh;
   trajectory_msgs::JointTrajectoryPoint point;
   ros::Publisher pub_traj = nh.advertise<trajectory_msgs::JointTrajectoryPoint>("trajectory", 1);
