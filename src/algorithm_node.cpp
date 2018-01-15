@@ -1,5 +1,7 @@
 #include <pioneer_mrs/pioneer.h>
 #include <pioneer_mrs/CommunicationState.h>
+#include <pioneer_mrs/MissionState.h>
+#include <pioneer_mrs/Point2D.h>
 #include <geometry_msgs/Vector3.h>
 
 class Algorithm : public Pioneer
@@ -9,6 +11,7 @@ class Algorithm : public Pioneer
 
   public:
     void computeVelocity(double);
+    void missionStateCallBack(const pioneer_mrs::MissionState &);
     void communicationStateCallBack(const pioneer_mrs::CommunicationState &);
     void robot1ViconPoseCallBack(const geometry_msgs::TransformStamped &);
     void robot2ViconPoseCallBack(const geometry_msgs::TransformStamped &);
@@ -18,16 +21,19 @@ class Algorithm : public Pioneer
   
   protected:
     void updatePose(int, geometry_msgs::TransformStamped);
-    geometry_msgs::Vector3 sign(geometry_msgs::Pose2D, geometry_msgs::Pose2D);
-    geometry_msgs::Vector3 gradient(geometry_msgs::Pose2D);
+    Point2D sign(Point2D);
+    Point2D gradient(Point2D);
     
   protected:
     double Q[5];
+    bool STATE;
     bool comm_state[5];
-    geometry_msgs::Pose2D pose[5];
-    geometry_msgs::Pose2D pose_offset;
+    Point2D pose_i;
+    Point2D pose_j[5];
+    Point2D pose_offset[5];
     geometry_msgs::Vector3 vel_hp;
 
+    ros::Subscriber miss_state_sub;
     ros::Subscriber comm_state_sub;
     ros::Subscriber vicon_sub[5];
     ros::Publisher vel_hp_pub;
@@ -35,11 +41,31 @@ class Algorithm : public Pioneer
 
 
 Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
-  Pioneer(nh, nh_private)
+  Pioneer(nh, nh_private),
+  STATE(false),
+  pose_i(pose_hp.x, pose_hp.y)
 {
+  pose_offset[0].x = 0;
+  pose_offset[0].y = 0;
+
+  pose_offset[1].x = 1;
+  pose_offset[1].y = 0;
+
+  pose_offset[2].x = -1;
+  pose_offset[2].y = 0;
+
+  pose_offset[3].x = 0;
+  pose_offset[3].y = 1;
+
+  pose_offset[4].x = 0;
+  pose_offset[4].y = -1;
+
+  pose_i = pose_i + pose_offset[HOSTNUM];
+
   for(int i=0; i<=4; i++)
     Q[i] = 0;
 
+  miss_state_sub = nh.subscribe("mission_state", 1, &Algorithm::missionStateCallBack, this);
   comm_state_sub = nh.subscribe("comm_state", 1, &Algorithm::communicationStateCallBack, this);
 
   vicon_sub[0] = nh.subscribe("/vicon/robot1/robot1", 1, &Algorithm::robot1ViconPoseCallBack, this);
@@ -49,6 +75,11 @@ Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   vicon_sub[4] = nh.subscribe("/vicon/robot5/robot5", 1, &Algorithm::robot5ViconPoseCallBack, this);
 
   vel_hp_pub = nh.advertise<geometry_msgs::Vector3>("cmd_vel_hp", 1);
+}
+
+void Algorithm::missionStateCallBack(const pioneer_mrs::MissionState& msg)
+{
+  this->STATE = msg.algorithm;
 }
 
 
@@ -83,100 +114,95 @@ void Algorithm::robot5ViconPoseCallBack(const geometry_msgs::TransformStamped& m
 
 void Algorithm::updatePose(int index, geometry_msgs::TransformStamped msg)
 {
-  this->pose[index].theta = 0;
-  this->pose[index].x = msg.transform.translation.x;
-  this->pose[index].y = msg.transform.translation.y;
-  ROS_DEBUG_STREAM("pose_r"<<index<<": x="<<pose[index].x<<"; y="<<pose[index].y<<";\n");
+  this->pose_j[index].x = msg.transform.translation.x;
+  this->pose_j[index].y = msg.transform.translation.y;
+  ROS_DEBUG_STREAM("pose_r"<<index<<": x="<<pose_j[index].x<<"; y="<<pose_j[index].y<<";\n");
 }
 
-geometry_msgs::Vector3 Algorithm::sign(geometry_msgs::Pose2D m, geometry_msgs::Pose2D n)
+Point2D Algorithm::sign(Point2D input)
 {
-  geometry_msgs::Vector3 vector;
-  if(m.x > n.x)
-    vector.x = 1;
-  else if(m.x == n.x)
-    vector.x = 0;
+  Point2D point;
+  if(input.x > 0)
+    point.x = 1;
+  else if(input.x == 0)
+    point.x = 0;
   else
-    vector.x = -1;
+    point.x = -1;
 
-  if(m.y > n.y)
-    vector.y = 1;
-  else if(m.y == n.y)
-    vector.y = 0;
+  if(input.y > 0)
+    point.y = 1;
+  else if(input.y == 0)
+    point.y = 0;
   else
-    vector.y = -1;
+    point.y = -1;
 
-  vector.z = 0;
-  return vector;
+  return point;
 }
 
 
-geometry_msgs::Vector3 Algorithm::gradient(geometry_msgs::Pose2D input)
+Point2D Algorithm::gradient(Point2D input)
 {
   double x = input.x, y = input.y;
-  geometry_msgs::Vector3 vector;
+  Point2D point;
   switch(HOSTNUM)
   {
     // f(x) = 0.5x^2 + 0.5y^2
     // g(x) = [x, y]
     case 0:
-      vector.x = x;
-      vector.y = y;
+      point.x = x;
+      point.y = y;
     
     // f(x) = 0.5(x-1)^2 + 0.5y^2
     // g(x) = [x-1, y]
     case 1:
-      vector.x = x - 1;
-      vector.y = y;
+      point.x = x - 1;
+      point.y = y;
 
     // f(x) = 0.5(x+1)^2 + 0.5y^2
     // g(x) = [x+1, y]
     case 2:
-      vector.x = x + 1;
-      vector.y = y;
+      point.x = x + 1;
+      point.y = y;
 
     // f(x) = 0.5x^2 + 0.5(y-1)^2
     // g(x) = [x, y-1]
     case 3:
-      vector.x = x;
-      vector.y = y - 1;
+      point.x = x;
+      point.y = y - 1;
 
     // f(x) = 0.5x^2 + 0.5(y+1)^2
     // g(x) = [x, y+1]
     case 4:
-      vector.x = x;
-      vector.y = y + 1;
-
-    default:
-      vector.x = 0;
-      vector.y = 0;
+      point.x = x;
+      point.y = y + 1;
   }
-  vector.z = 0;
-  return vector;
+  return point;
 }
 
 
 void Algorithm::computeVelocity(double T)
 {
-  this->vel_hp.x = 0;
-  this->vel_hp.y = 0;
-  this->vel_hp.z = 0;
-  geometry_msgs::Vector3 grad;
-  geometry_msgs::Vector3 sgn;
-  for(int i=0; i<=4; i++)
+  if(STATE)
   {
-    if(comm_state[i])
+    Point2D vel, sgn, grad;
+    for(int i=0; i<=4; i++)
     {
-      sgn = sign(pose[i], pose_hp);
-      vel_hp.x += Q[i]*sgn.x;
-      vel_hp.y += Q[i]*sgn.y;
-      this->Q[i] += T;
+      if(comm_state[i])
+      {
+        sgn = sign( (pose_j[i] + pose_offset[i]) - pose_i) * Q[i];
+        vel = vel + sgn;
+        this->Q[i] += T;
+      }
     }
+    grad = gradient(pose_i);
+    vel = vel - grad;
+    ROS_DEBUG_STREAM("Vel2D: x="<<vel.x<<"; y="<<vel.y<<";\n");
+
+    vel_hp.x = vel.x;
+    vel_hp.y = vel.y;
+    vel_hp.z = 0;
+    vel_hp_pub.publish(this->vel_hp);
   }
-  grad = gradient(pose_hp);
-  vel_hp.x -= grad.x;
-  vel_hp.y -= grad.y;
-  vel_hp_pub.publish(this->vel_hp);
 }
 
 
@@ -187,11 +213,12 @@ int main(int argc, char **argv)
   ros::NodeHandle nh_private("~");
   Algorithm* algorithm = new Algorithm(nh, nh_private);
 
-  ros::Rate rate(20);
+  double T = 0.05; // sample period
+  ros::Rate rate(1/T);
   while(ros::ok())
   {
     ros::spinOnce();
-    algorithm->computeVelocity(1/20);
+    algorithm->computeVelocity(T);
     rate.sleep();
   }
 

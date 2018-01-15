@@ -140,7 +140,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/pioneer_mrs_node.cpp)
 add_executable(algorithm_node
-  src/algorithm_node.cpp src/pioneer.cpp 
+  src/algorithm_node.cpp src/pioneer.cpp
 )
 add_executable(handpoint_node
   src/handpoint_node.cpp src/pioneer.cpp 

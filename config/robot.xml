@@ -13,4 +13,8 @@
 	    <param name="machine" type="string" value="$(arg machine)"/>
 		<param name="pose" type="string" value="$(arg pose)"/>
 		</node>
+	<node name="algorithm_node" pkg="pioneer_mrs" type="algorithm_node" output="screen" machine="$(arg machine)">
+	    <param name="machine" type="string" value="$(arg machine)"/>
+		<param name="pose" type="string" value="$(arg pose)"/>
+		</node>
 </launch>
