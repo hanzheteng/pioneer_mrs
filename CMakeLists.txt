@@ -163,6 +163,7 @@ add_executable(comm_state_cmd
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(algorithm_node pioneer_mrs_generate_messages_cpp)
+add_dependencies(trajectory_node pioneer_mrs_generate_messages_cpp)
 add_dependencies(comm_state_cmd pioneer_mrs_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against

@@ -1,6 +1,5 @@
 #include <ros/ros.h> 
 #include <pioneer_mrs/CommunicationState.h>
-#include <iostream>
 
 class Communication
 {

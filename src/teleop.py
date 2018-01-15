@@ -7,7 +7,8 @@ import rospy
 from geometry_msgs.msg import Vector3
 from pioneer_mrs.msg import MissionState
 
-welcomeMessage = """Welcome to be the commander of this multi-robot system.
+welcomeMessage = """
+Welcome to be the commander of this multi-robot system.
 Press number 1-5 to switch the robot.
 Press 9 to select all and 0 to select none.
 For selected robots:
@@ -15,7 +16,8 @@ For selected robots:
     Press 'space bar' to stop the robot.
     Press 't' to start a trajectory mission.
     Press 'm' to start a multi-robot algorithm mission.
-    Press 's' to stop the mission."""
+    Press 's' to stop the mission.
+"""
 
 robotList = ('0', '1', '2', '3', '4', '5', '9')
 robotSwitch = [False, False, False, False, False]
