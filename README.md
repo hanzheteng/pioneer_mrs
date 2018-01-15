@@ -5,7 +5,7 @@ ROS package for Pioneer 3-AT Multi-Robot Systems.
 <table>
   <tr>
     <th> ROS package </th>
-    <th> Description (<I> Capabilities </I>) </th>
+    <th> Description (<I>Capabilities</I>) </th>
     <th> Platform </th>
     <th> Maintainer </th>
   </tr>
@@ -13,9 +13,9 @@ ROS package for Pioneer 3-AT Multi-Robot Systems.
     <td> <a href="https://github.com/hanzheteng/pioneer_mrs">
       pioneer_mrs </a> </td>
     <td> <ul>
-      <li> Control the (x,y) velocity of the hand point of the robot (a linear system, see [demo](https://photos.app.goo.gl/RM9N5i3zI2EHCJNo1)) </li>
+      <li> Control the (x,y) velocity of the hand point of the robot (a linear system, see <a href="https://photos.app.goo.gl/RM9N5i3zI2EHCJNo1">demo</a>) </li>
       <li> Friendly interface to control part of or all the robots at the same time </li>
-      <li> Task 1: multi-robot trajectory tracking (circular shape, [demo](https://photos.app.goo.gl/eyeclA9uSp1WvkLr2)) </li>
+      <li> Task 1: multi-robot trajectory tracking (circular shape, <a href="https://photos.app.goo.gl/eyeclA9uSp1WvkLr2">demo</a>) </li>
       <li> Task 2: distributed adaptive gradient optimization algorithm </li> </ul> </td>
     <td> <ul>
       <li> <a href="http://robots.ros.org/pioneer-3-at/"> Pioneer 3-AT </a> </li>
@@ -64,22 +64,21 @@ Sample usage (on your laptop):
     <th> Sub topic </th>
     <th> Pub topic </th>
     <th> Description </th>
-    <th> Maintainer </th>
   </tr>
   <tr>
-    <td> /vicon </td>
+    <td> /vicon
+      <br> (<a href="http://wiki.ros.org/vicon_bridge"> vicon_bridge </a> package ) </td>
     <td> --- </td>
     <td> /vicon/robot#/robot# </td>
     <td> publish translation and rotation info </td>
-    <td> <a href="http://wiki.ros.org/vicon_bridge"> vicon_bridge </a> package </td>
   </tr>
   <tr>
-    <td> /robot#/RosAria </td>
+    <td> /robot#/RosAria
+      <br> (<a href="http://wiki.ros.org/ROSARIA"> ROSARIA </a> package ) </td>
     <td> /robot#/RosAria/cmd_vel </td>
     <td> /robot#/RosAria/pose
       <br> /robot#/RosAria/... </td>
     <td> receive velocity commands and execute </td>
-    <td> <a href="http://wiki.ros.org/ROSARIA"> ROSARIA </a> package </td>
   </tr>
   <tr>
     <td> /robot#/handpoint_node </td>
@@ -88,7 +87,6 @@ Sample usage (on your laptop):
       <br> /vicon/robot#/robot# </td>
     <td> /robot#/RosAria/cmd_vel </td>
     <td> translate hand-point commands </td>
-    <td> @hanzheteng </td>
   </tr>
   <tr>
     <td> /robot#/trajectory_node </td>
@@ -98,7 +96,6 @@ Sample usage (on your laptop):
       <br> /vicon/robot#/robot# </td>
     <td> /robot#/cmd_vel_hp </td>
     <td> receive trajectory commands and execute </td>
-    <td> @hanzheteng </td>
   </tr>
   <tr>
     <td> /robot#/algorithm_node </td>
@@ -108,7 +105,6 @@ Sample usage (on your laptop):
       <br> /vicon/robot#/robot# </td>
     <td> /robot#/cmd_vel_hp </td>
     <td> execute designed algorithm </td>
-    <td> @hanzheteng </td>
   </tr>
   <tr>
     <td> /commander/teleop </td>
@@ -116,21 +112,18 @@ Sample usage (on your laptop):
     <td> /robot#/mission_state
       <br> /robot#/cmd_vel_hp </td>
     <td> commander & teleoperation node </td>
-    <td> @hanzheteng </td>
   </tr>
   <tr>
     <td> /commander/trajectory_cmd </td>
     <td> --- </td>
     <td> /robot#/trajectory </td>
     <td> send designed trajectory info </td>
-    <td> @hanzheteng </td>
   </tr>
   <tr>
     <td> /commander/comm_state_cmd </td>
     <td> --- </td>
     <td> /robot#/comm_state </td>
     <td> create a communication graph between robots </td>
-    <td> @hanzheteng </td>
   </tr>
 </table>
 
@@ -145,19 +138,19 @@ Sample usage (on your laptop):
   <tr>
     <td> vicon/robot#/robot# </td>
     <td> see wiki </td>
-    <td> [TransformStamped.msg](http://docs.ros.org/api/geometry_msgs/html/msg/TransformStamped.html) </td>
+    <td> <a href="http://docs.ros.org/api/geometry_msgs/html/msg/TransformStamped.html"> TransformStamped.msg </a> </td>
     <td> --- </td>
   </tr>
   <tr>
     <td> /robot#/RosAria/pose </td>
     <td> see wiki </td>
-    <td> [Odometry.msg](http://docs.ros.org/api/nav_msgs/html/msg/Odometry.html) </td>
+    <td> <a href="http://docs.ros.org/api/nav_msgs/html/msg/Odometry.html"> Odometry.msg </a> </td>
     <td> --- </td>
   </tr>
   <tr>
     <td> /robot#/RosAria/cmd_vel </td>
     <td> see wiki </td>
-    <td> [Twist.msg](http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html) </td>
+    <td> <a href="http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html"> Twist.msg </a> </td>
     <td> --- </td>
   </tr>
   <tr>
@@ -165,7 +158,7 @@ Sample usage (on your laptop):
     <td> float64 x
       <br> float64 y
       <br> float64 z </td>
-    <td> [Vector3.msg](http://docs.ros.org/api/geometry_msgs/html/msg/Vector3.html) </td>
+    <td> <a href="http://docs.ros.org/api/geometry_msgs/html/msg/Vector3.html"> Vector3.msg </a> </td>
     <td> only use 2D velocity (z=0) </td>
   </tr>
   <tr>
@@ -175,7 +168,7 @@ Sample usage (on your laptop):
       <br> float64[] accelerations
       <br> float64[] effort
       <br> duration time_from_start </td>
-    <td> [JointTrajectoryPoint.msg](http://docs.ros.org/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html) </td>
+    <td> <a href="http://docs.ros.org/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html"> JointTrajectoryPoint.msg </a> </td>
     <td> --- </td>
   </tr>
   <tr>

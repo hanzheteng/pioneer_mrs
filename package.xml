@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>pioneer_mrs</name>
-  <version>1.0.6</version>
+  <version>1.1.0</version>
   <description>The pioneer_mrs ROS package for Pioneer 3-AT Multi-Robot Systems</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
