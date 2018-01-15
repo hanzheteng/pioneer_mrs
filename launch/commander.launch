@@ -1,6 +1,6 @@
 <launch>
+	<include file="$(find pioneer_mrs)/config/vicon.xml" />
 	<group ns="commander">
-		<include file="$(find pioneer_mrs)/config/vicon.xml" />	
 		<node name="teleop" pkg="pioneer_mrs" type="teleop.py" output="screen"/>
 		<node name="trajectory_cmd" pkg="pioneer_mrs" type="trajectory_cmd" output="screen"/>
 		<node name="comm_state_cmd" pkg="pioneer_mrs" type="comm_state_cmd" output="screen"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>pioneer_mrs</name>
-  <version>1.0.0</version>
+  <version>1.0.6</version>
   <description>The pioneer_mrs ROS package for Pioneer 3-AT Multi-Robot Systems</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
@@ -17,7 +17,7 @@
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
   <!-- Authors do not have to be maintainers, but could be -->
-  <author email="hanzheteng@outlook.com">Hanzhe Teng</author> 
+  <author email="hanzheteng@outlook.com">Hanzhe Teng</author>
 
   <!-- The *depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
