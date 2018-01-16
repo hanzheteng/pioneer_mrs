@@ -56,6 +56,8 @@
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>trajectory_msgs</exec_depend>
   <exec_depend>message_runtime</exec_depend>
+  <exec_depend>rosaria</exec_depend>
+  <exec_depend>vicon_bridge</exec_depend>
 
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
