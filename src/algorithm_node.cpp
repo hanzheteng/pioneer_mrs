@@ -25,7 +25,7 @@ class Algorithm : public Pioneer
     Point2D gradient(Point2D);
     
   protected:
-    double Q[5];
+    double Q;
     bool STATE;
     bool comm_state[5];
     Point2D pose_i;
@@ -42,6 +42,7 @@ class Algorithm : public Pioneer
 
 Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   Pioneer(nh, nh_private),
+  Q(0.5),
   STATE(false),
   pose_i(pose_hp.x, pose_hp.y)
 {
@@ -60,10 +61,7 @@ Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   pose_offset[4].x = 0;
   pose_offset[4].y = -1;
 
-  pose_i = pose_i + pose_offset[HOSTNUM];
-
-  for(int i=0; i<=4; i++)
-    Q[i] = 0;
+  pose_i = pose_i - pose_offset[HOSTNUM];
 
   miss_state_sub = nh.subscribe("mission_state", 1, &Algorithm::missionStateCallBack, this);
   comm_state_sub = nh.subscribe("comm_state", 1, &Algorithm::communicationStateCallBack, this);
@@ -189,9 +187,9 @@ void Algorithm::computeVelocity(double T)
     {
       if(comm_state[i])
       {
-        sgn = sign( (pose_j[i] + pose_offset[i]) - pose_i) * Q[i];
+        sgn = sign( (pose_j[i] - pose_offset[i]) - pose_i) * Q;
         vel = vel + sgn;
-        this->Q[i] += T;
+        //this->Q += T;
       }
     }
     grad = gradient(pose_i);
