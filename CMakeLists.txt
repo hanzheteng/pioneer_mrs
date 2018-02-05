@@ -59,9 +59,9 @@ add_message_files(FILES
 )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-# )
+add_service_files(FILES
+  Pose2D.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -160,9 +160,10 @@ add_executable(comm_state_cmd
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(algorithm_node pioneer_mrs_generate_messages_cpp)
-add_dependencies(trajectory_node pioneer_mrs_generate_messages_cpp)
-add_dependencies(comm_state_cmd pioneer_mrs_generate_messages_cpp)
+add_dependencies(handpoint_node pioneer_mrs_generate_messages)
+add_dependencies(algorithm_node pioneer_mrs_generate_messages)
+add_dependencies(trajectory_node pioneer_mrs_generate_messages)
+add_dependencies(comm_state_cmd pioneer_mrs_generate_messages)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
