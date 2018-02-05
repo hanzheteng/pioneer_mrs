@@ -1,5 +1,5 @@
 # pioneer_mrs
-## Introduction
+## 1. Introduction
 ROS package for Pioneer 3-AT Multi-Robot Systems.
 
 <table>
@@ -27,7 +27,7 @@ ROS package for Pioneer 3-AT Multi-Robot Systems.
   </tr>
 </table>
 
-## Usage
+## 2. Prerequisites
 Before using this package to drive your robots, you may configure your platform following the below steps:
 - All machines (5 robots + 1 laptop) are installed Ubuntu 16.04 and ROS Kinetic
 - All robots (onboard computer, actually) are installed and *catkin_make*-ed ARIA lib and ROSARIA package
@@ -46,8 +46,9 @@ Notice:
 1. You must `catkin_make` the ROSARIA package first before you clone and make this package, otherwise it may report errors.
 2. Sometimes you need to `catkin_make pioneer_mrs_generate_messages` first before `catkin_make` this package, because the compiler may not be able to find the header file of our messages.
 
-Sample usage (on your laptop):
-1. launch one robot (e.g. robot#) </br>
+## 3. Usage
+Sample launch usage (on your laptop):
+1. launch one robot (e.g. robot1) </br>
 `roslaunch pioneer_mrs single-robot.launch machine:=robot1`
 2. launch all five robots </br>
 `roslaunch pioneer_mrs multi-robot.launch`
@@ -56,8 +57,11 @@ Sample usage (on your laptop):
 4. you may choose localization approach like this </br>
 `roslaunch pioneer_mrs single/multi-robot.launch pose:=odom/vicon`
 
-## Robot Operating System Info
-### ROS Node Info
+Launch files:
+
+
+## 4. ROS Node Info
+Note: `robot#` represents any robot label from 1 to 5.
 <table>
   <tr>
     <th> Node name </th>
@@ -67,14 +71,14 @@ Sample usage (on your laptop):
   </tr>
   <tr>
     <td> /vicon
-      <br> (<a href="http://wiki.ros.org/vicon_bridge"> vicon_bridge </a> package ) </td>
+      <br> (<a href="http://wiki.ros.org/vicon_bridge">vicon_bridge </a> package) </td>
     <td> --- </td>
     <td> /vicon/robot#/robot# </td>
     <td> publish translation and rotation info </td>
   </tr>
   <tr>
     <td> /robot#/RosAria
-      <br> (<a href="http://wiki.ros.org/ROSARIA"> ROSARIA </a> package ) </td>
+      <br> (<a href="http://wiki.ros.org/ROSARIA">rosaria</a> package) </td>
     <td> /robot#/RosAria/cmd_vel </td>
     <td> /robot#/RosAria/pose
       <br> /robot#/RosAria/... </td>
@@ -127,13 +131,13 @@ Sample usage (on your laptop):
   </tr>
 </table>
 
-### ROS Topic Format
+## 5. ROS Topic Format
 <table>
   <tr>
     <th> Topic name </th>
     <th> Format </th>
     <th> Message file </th>
-    <th> Description </th>
+    <th width=25%> Description </th>
   </tr>
   <tr>
     <td> vicon/robot#/robot# </td>
@@ -186,11 +190,11 @@ Sample usage (on your laptop):
   </tr>
 </table>
 
-## Update Log
+## 6. Update Log
 - V1.0 (Jan. 4, 2018) Basic multi-robot control framework
 - V1.1 (Jan 15, 2018) The MRS control framework works well with new features, but the algorithm node need to be updated
 
-## Debug FAQ
+## 7. Debug FAQ
 Most of the time, you can use `roswtf` command to diagnose your problem.
 1. If `roslaunch` or `rosrun` cannot autocomplete by `Tab` key, first check if your search path covers the package by `env | grep ROS`. If it already exist in the path, try `rospack profile` or reboot your system.
 2. If prompt `process has died, exit code -11`, you may access data in the code which was not initialized.
