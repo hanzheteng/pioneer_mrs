@@ -6,7 +6,7 @@ Pioneer::Pioneer(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   POSE(""),
   HANDPOINT_OFFSET(0)
 {
-  nh_private.param( "machine", HOSTNAME, std::string("robot1") );
+  nh_private.param( "hostname", HOSTNAME, std::string("robot1") );
   ROS_INFO( "[%s]: node launched.", HOSTNAME.c_str() );
 
   HOSTNUM = std::stoi( HOSTNAME.substr(5) ) - 1; // array index

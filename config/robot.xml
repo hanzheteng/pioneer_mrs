@@ -1,20 +1,22 @@
 <launch>
-	<arg name="machine" />
-	<arg name="pose" doc="localization approach"/>
+	<arg name="hostname" default="robot1"/>
+	<arg name="machine" default="localhost"/>
+	<arg name="pose" default="odom" doc="localization approach" />
+	<arg name="port" default="/dev/ttyS0" />
 
 	<node name="RosAria" pkg="rosaria" type="RosAria" machine="$(arg machine)">
-		<param name="port" type="string" value="/dev/ttyS0" />
+		<param name="port" type="string" value="$(arg port)" />
 		</node>
 	<node name="handpoint_node" pkg="pioneer_mrs" type="handpoint_node" output="screen" machine="$(arg machine)">
-	    <param name="machine" type="string" value="$(arg machine)"/>
+	    <param name="hostname" type="string" value="$(arg hostname)"/>
 		<param name="pose" type="string" value="$(arg pose)"/>
 		</node>
 	<node name="trajectory_node" pkg="pioneer_mrs" type="trajectory_node" output="screen" machine="$(arg machine)">
-	    <param name="machine" type="string" value="$(arg machine)"/>
+	    <param name="hostname" type="string" value="$(arg hostname)"/>
 		<param name="pose" type="string" value="$(arg pose)"/>
 		</node>
 	<node name="algorithm_node" pkg="pioneer_mrs" type="algorithm_node" output="screen" machine="$(arg machine)">
-	    <param name="machine" type="string" value="$(arg machine)"/>
+	    <param name="hostname" type="string" value="$(arg hostname)"/>
 		<param name="pose" type="string" value="$(arg pose)"/>
 		</node>
 </launch>

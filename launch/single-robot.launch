@@ -1,11 +1,12 @@
 <launch>
-	<arg name="machine" default="robot5" />
-	<arg name="pose" default="vicon" />
+	<arg name="machine" default="robot1" />
+	<arg name="pose" default="odom" />
 
 	<include file="$(find pioneer_mrs)/config/robots.machine" />
 
 	<include file="$(find pioneer_mrs)/config/robot.xml" ns="$(arg machine)">
-		<arg name="machine" value="$(arg machine)" />
+		<arg name="hostname" value="$(arg machine)" />
+		<arg name="machine" value="$(arg machine)">
 		<arg name="pose" value="$(arg pose)" />
 		</include>
 
