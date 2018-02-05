@@ -2,8 +2,8 @@
 #define PIONEER_MRS_PIONEER_H_
 
 #include <ros/ros.h> 
-#include <geometry_msgs/Pose2D.h>
 #include <nav_msgs/Odometry.h>
+#include <geometry_msgs/Pose2D.h>
 #include <geometry_msgs/TransformStamped.h>
 
 #include <math.h>

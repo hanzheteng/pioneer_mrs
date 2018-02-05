@@ -1,6 +1,7 @@
 #include <pioneer_mrs/pioneer.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Vector3.h>
+#include <pioneer_mrs/Pose2D.h>
 
 class HandPoint : public Pioneer
 {
@@ -9,6 +10,7 @@ class HandPoint : public Pioneer
 
   public:
     void cmdVelHandPointCallBack(const geometry_msgs::Vector3 &);
+    bool poseServiceCallBack(pioneer_mrs::Pose2DRequest &, pioneer_mrs::Pose2DResponse &);
 
   protected:
     // velocity info
@@ -18,6 +20,7 @@ class HandPoint : public Pioneer
     // topic init
     ros::Subscriber vel_hp_sub;
     ros::Publisher vel_pub;
+    ros::ServiceServer pose_server;
 };
 
 
@@ -26,6 +29,8 @@ HandPoint::HandPoint(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
 {
   vel_hp_sub = nh.subscribe("cmd_vel_hp", 1, &HandPoint::cmdVelHandPointCallBack, this);
   vel_pub = nh.advertise<geometry_msgs::Twist>("RosAria/cmd_vel", 1);
+
+  pose_server = nh.advertiseService("get_pose", &HandPoint::poseServiceCallBack, this);
 }
 
 
@@ -56,6 +61,14 @@ void HandPoint::cmdVelHandPointCallBack(const geometry_msgs::Vector3& msg)
   vel_pub.publish(this->vel);
 }
 
+bool HandPoint::poseServiceCallBack(pioneer_mrs::Pose2DRequest &rqt, pioneer_mrs::Pose2DResponse &res)
+{
+  res.theta = this->pose_hp.theta;
+  res.x = this->pose_hp.x;
+  res.y = this->pose_hp.y;
+  res.success = true;
+  return true;
+}
 
 int main(int argc, char **argv)
 {

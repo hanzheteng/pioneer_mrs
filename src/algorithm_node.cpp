@@ -2,6 +2,7 @@
 #include <pioneer_mrs/CommunicationState.h>
 #include <pioneer_mrs/MissionState.h>
 #include <pioneer_mrs/Point2D.h>
+#include <pioneer_mrs/Pose2D.h>
 #include <geometry_msgs/Vector3.h>
 
 class Algorithm : public Pioneer
@@ -13,67 +14,63 @@ class Algorithm : public Pioneer
     void computeVelocity(double);
     void missionStateCallBack(const pioneer_mrs::MissionState &);
     void communicationStateCallBack(const pioneer_mrs::CommunicationState &);
-    void robot1ViconPoseCallBack(const geometry_msgs::TransformStamped &);
-    void robot2ViconPoseCallBack(const geometry_msgs::TransformStamped &);
-    void robot3ViconPoseCallBack(const geometry_msgs::TransformStamped &);
-    void robot4ViconPoseCallBack(const geometry_msgs::TransformStamped &);
-    void robot5ViconPoseCallBack(const geometry_msgs::TransformStamped &);
+    void updateNeighborPose();
   
   protected:
-    void updatePose(int, geometry_msgs::TransformStamped);
     Point2D sign(Point2D);
     Point2D gradient(Point2D);
     
   protected:
     double Q;
-    bool STATE;
-    bool comm_state[5];
     Point2D pose_i;
-    Point2D pose_j[5];
     Point2D pose_offset[5];
-    geometry_msgs::Vector3 vel_hp;
 
+    bool STATE;
     ros::Subscriber miss_state_sub;
+
+    bool comm_state[5];
     ros::Subscriber comm_state_sub;
-    ros::Subscriber vicon_sub[5];
+
+    Point2D pose_j[5];
+    ros::ServiceClient get_pose[5];
+
+    geometry_msgs::Vector3 vel_hp;
     ros::Publisher vel_hp_pub;
 };
 
 
 Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   Pioneer(nh, nh_private),
-  Q(0.5),
-  STATE(false),
-  pose_i(pose_hp.x, pose_hp.y)
+  Q(0.2),
+  STATE(false)
 {
-  pose_offset[0].x = 0;
-  pose_offset[0].y = 0;
+  pose_offset[0].x = -1.5;
+  pose_offset[0].y = 1.5;
 
-  pose_offset[1].x = 1;
-  pose_offset[1].y = 0;
+  pose_offset[1].x = 1.5;
+  pose_offset[1].y = 1.5;
 
-  pose_offset[2].x = -1;
+  pose_offset[2].x = 0;
   pose_offset[2].y = 0;
 
-  pose_offset[3].x = 0;
-  pose_offset[3].y = 1;
+  pose_offset[3].x = 1.5;
+  pose_offset[3].y = -1.5;
 
-  pose_offset[4].x = 0;
-  pose_offset[4].y = -1;
-
-  pose_i = pose_i - pose_offset[HOSTNUM];
+  pose_offset[4].x = -1.5;
+  pose_offset[4].y = -1.5;
 
   miss_state_sub = nh.subscribe("mission_state", 1, &Algorithm::missionStateCallBack, this);
   comm_state_sub = nh.subscribe("comm_state", 1, &Algorithm::communicationStateCallBack, this);
 
-  vicon_sub[0] = nh.subscribe("/vicon/robot1/robot1", 1, &Algorithm::robot1ViconPoseCallBack, this);
-  vicon_sub[1] = nh.subscribe("/vicon/robot2/robot2", 1, &Algorithm::robot2ViconPoseCallBack, this);
-  vicon_sub[2] = nh.subscribe("/vicon/robot3/robot3", 1, &Algorithm::robot3ViconPoseCallBack, this);
-  vicon_sub[3] = nh.subscribe("/vicon/robot4/robot4", 1, &Algorithm::robot4ViconPoseCallBack, this);
-  vicon_sub[4] = nh.subscribe("/vicon/robot5/robot5", 1, &Algorithm::robot5ViconPoseCallBack, this);
-
+  for(int i=0;i<=4;i++)
+  {
+    if(i != HOSTNUM)
+      get_pose[i] = nh.serviceClient<pioneer_mrs::Pose2D>("/robot" + std::to_string(i+1) + "/get_pose");
+  }
+  
   vel_hp_pub = nh.advertise<geometry_msgs::Vector3>("cmd_vel_hp", 1);
 }
+
 
 void Algorithm::missionStateCallBack(const pioneer_mrs::MissionState& msg)
 {
@@ -87,35 +84,6 @@ void Algorithm::communicationStateCallBack(const pioneer_mrs::CommunicationState
     this->comm_state[i] = msg.state[i];
 }
 
-
-void Algorithm::robot1ViconPoseCallBack(const geometry_msgs::TransformStamped& msg)
-{
-  updatePose(0,msg);
-}
-void Algorithm::robot2ViconPoseCallBack(const geometry_msgs::TransformStamped& msg)
-{
-  updatePose(1,msg);
-}
-void Algorithm::robot3ViconPoseCallBack(const geometry_msgs::TransformStamped& msg)
-{
-  updatePose(2,msg);
-}
-void Algorithm::robot4ViconPoseCallBack(const geometry_msgs::TransformStamped& msg)
-{
-  updatePose(3,msg);
-}
-void Algorithm::robot5ViconPoseCallBack(const geometry_msgs::TransformStamped& msg)
-{
-  updatePose(4,msg);
-}
-
-
-void Algorithm::updatePose(int index, geometry_msgs::TransformStamped msg)
-{
-  this->pose_j[index].x = msg.transform.translation.x;
-  this->pose_j[index].y = msg.transform.translation.y;
-  ROS_DEBUG_STREAM("pose_r"<<index<<": x="<<pose_j[index].x<<"; y="<<pose_j[index].y<<";\n");
-}
 
 Point2D Algorithm::sign(Point2D input)
 {
@@ -178,23 +146,49 @@ Point2D Algorithm::gradient(Point2D input)
 }
 
 
+void Algorithm::updateNeighborPose()
+{
+  ROS_DEBUG_STREAM(HOSTNAME + " Updating Neighbor Pose.");
+  pioneer_mrs::Pose2D srv[5];
+  for(int i=0;i<=4;i++)
+  {
+    if(i != HOSTNUM)
+      get_pose[i].call(srv[i]);
+  }
+  for(int i=0;i<=4;i++)
+  {
+    if(srv[i].response.success)
+    {
+      pose_j[i].x = srv[i].response.x;
+      pose_j[i].y = srv[i].response.y;
+    }
+  }
+  ROS_DEBUG_STREAM(HOSTNAME + " Updated Neighbor Pose.");
+  pose_i.x = pose_hp.x;
+  pose_i.y = pose_hp.y;
+}
+
+
 void Algorithm::computeVelocity(double T)
 {
   if(STATE)
   {
+    updateNeighborPose();
+    pose_i = pose_i - pose_offset[HOSTNUM];
     Point2D vel, sgn, grad;
+
     for(int i=0; i<=4; i++)
     {
       if(comm_state[i])
       {
-        sgn = sign( (pose_j[i] - pose_offset[i]) - pose_i) * Q;
+        sgn = sign( (pose_j[i] - pose_offset[i]) - pose_i)* Q;
         vel = vel + sgn;
         //this->Q += T;
       }
     }
-    grad = gradient(pose_i);
+    grad = gradient( pose_i );
     vel = vel - grad;
-    ROS_DEBUG_STREAM("Vel2D: x="<<vel.x<<"; y="<<vel.y<<";\n");
+    ROS_DEBUG_STREAM(HOSTNAME + " Vel2D: x="<<vel.x<<"; y="<<vel.y<<";\n");
 
     vel_hp.x = vel.x;
     vel_hp.y = vel.y;

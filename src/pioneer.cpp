@@ -23,6 +23,7 @@ Pioneer::Pioneer(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
     vicon_pose_sub = nh.subscribe("/vicon/" + HOSTNAME + "/" + HOSTNAME, 1, &Pioneer::viconPoseCallBack, this);
   else 
     odom_pose_sub = nh.subscribe("RosAria/pose", 1, &Pioneer::odomPoseCallBack, this);
+
 }
 
 
@@ -45,6 +46,7 @@ void Pioneer::odomPoseCallBack(const nav_msgs::Odometry& msg)
   geometry_msgs::Pose2D pose; // center pose
   pose.x = msg.pose.pose.position.x;
   pose.y = msg.pose.pose.position.y;
+  pose.y = pose.y - (HOSTNUM - 2); // initialization offset: put robot 1-5 on a row, with 1 meter space
   this->pose_hp.x = pose.x + HANDPOINT_OFFSET * cos(pose.theta);
   this->pose_hp.y = pose.y + HANDPOINT_OFFSET * sin(pose.theta);
   ROS_DEBUG_STREAM("odom: theta="<<pose_hp.theta<<"; x_hp="<<pose_hp.x<<"; y_hp="<<pose_hp.y<<";\n");
@@ -64,5 +66,7 @@ void Pioneer::viconPoseCallBack(const geometry_msgs::TransformStamped& msg)
   this->pose_hp.y = msg.transform.translation.y;
   ROS_DEBUG_STREAM("vicon: theta="<<pose_hp.theta<<"; x_hp="<<pose_hp.x<<"; y_hp="<<pose_hp.y<<";\n");
 }
+
+
 
 

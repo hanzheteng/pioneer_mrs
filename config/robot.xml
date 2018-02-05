@@ -1,6 +1,6 @@
 <launch>
 	<arg name="hostname" default="robot1"/>
-	<arg name="machine" default="localhost"/>
+	<arg name="machine" default="commander"/>
 	<arg name="pose" default="odom" doc="localization approach" />
 	<arg name="port" default="/dev/ttyS0" />
 

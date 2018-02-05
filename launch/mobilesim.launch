@@ -1,5 +1,7 @@
 <launch>
 
+	<include file="$(find pioneer_mrs)/config/robots.machine" />
+
 	<include file="$(find pioneer_mrs)/config/robot.xml" ns="robot1">
 		<arg name="hostname" value="robot1" />
 		<arg name="port" value="localhost:8101" />

@@ -77,8 +77,8 @@ def teleoperation():
 
         elif key in movementList:
             vel = Vector3()  # default zero
-            vel.x = movementList[key][0] * 0.2
-            vel.y = movementList[key][1] * 0.2
+            vel.x = movementList[key][0] * 0.4
+            vel.y = movementList[key][1] * 0.4
             for i in range(5):
                 if robotSwitch[i]:
                     pub_vel[i].publish(vel)
