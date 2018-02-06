@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>pioneer_mrs</name>
-  <version>1.1.0</version>
+  <version>1.1.4</version>
   <description>The pioneer_mrs ROS package for Pioneer 3-AT Multi-Robot Systems</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
@@ -58,6 +58,9 @@
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>rosaria</exec_depend>
   <exec_depend>vicon_bridge</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>amr_robots_gazebo</exec_depend>
+  <exec_depend>amr_robots_description</exec_depend>
 
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
