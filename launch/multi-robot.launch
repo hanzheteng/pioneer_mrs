@@ -5,31 +5,31 @@
 
 	<include file="$(find pioneer_mrs)/config/robot.xml" ns="robot1">
 		<arg name="hostname" value="robot1" />
-		<arg name="machine" value="robot1">
+		<arg name="machine" value="robot1" />
 		<arg name="pose" value="$(arg pose)" />
 		</include>
 
 	<include file="$(find pioneer_mrs)/config/robot.xml" ns="robot2">
 		<arg name="hostname" value="robot2" />
-		<arg name="machine" value="robot2">
+		<arg name="machine" value="robot2" />
 		<arg name="pose" value="$(arg pose)" />
 		</include>
 
 	<include file="$(find pioneer_mrs)/config/robot.xml" ns="robot3">
 		<arg name="hostname" value="robot3" />
-		<arg name="machine" value="robot3">
+		<arg name="machine" value="robot3" />
 		<arg name="pose" value="$(arg pose)" />
 		</include>
 
 	<include file="$(find pioneer_mrs)/config/robot.xml" ns="robot4">
 		<arg name="hostname" value="robot4" />
-		<arg name="machine" value="robot4">
+		<arg name="machine" value="robot4" />
 		<arg name="pose" value="$(arg pose)" />
 		</include>
 
 	<include file="$(find pioneer_mrs)/config/robot.xml" ns="robot5">
 		<arg name="hostname" value="robot5" />
-		<arg name="machine" value="robot5">
+		<arg name="machine" value="robot5" />
 		<arg name="pose" value="$(arg pose)" />
 		</include>
 

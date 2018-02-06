@@ -6,7 +6,7 @@
 
 	<include file="$(find pioneer_mrs)/config/robot.xml" ns="$(arg machine)">
 		<arg name="hostname" value="$(arg machine)" />
-		<arg name="machine" value="$(arg machine)">
+		<arg name="machine" value="$(arg machine)" />
 		<arg name="pose" value="$(arg pose)" />
 		</include>
 
