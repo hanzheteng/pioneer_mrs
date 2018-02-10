@@ -2,6 +2,8 @@
 
 	<include file="$(find pioneer_mrs)/config/robots.machine" />
 
+	<node name="mobilesim" pkg="pioneer_mrs" type="mobilesim.bash" />
+
 	<include file="$(find pioneer_mrs)/config/robot.xml" ns="robot1">
 		<arg name="hostname" value="robot1" />
 		<arg name="port" value="localhost:8101" />

@@ -1,18 +1,33 @@
 <launch>
   <env name="GAZEBO_MODEL_PATH" value="$GAZEBO_MODEL_PATH:$(find amr_robots_gazebo)/models" />
   <env name="GAZEBO_RESOURCE_PATH" value="$GAZEBO_RESOURCE_PATH:$(find amr_robots_gazebo)/models" />
-
   <arg name="world_name" default="worlds/empty.world" />
+  <arg name="urdf" default="$(find pioneer_mrs)/config/pioneer3at.urdf" />
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg urdf)" />
+  <arg name="r1" default="-model robot1 -robot_namespace robot1/RosAria -x 0 -y 2" />
+  <arg name="r2" default="-model robot2 -robot_namespace robot2/RosAria -x 0 -y 1" />
+  <arg name="r3" default="-model robot3 -robot_namespace robot3/RosAria -x 0 -y 0" />
+  <arg name="r4" default="-model robot4 -robot_namespace robot4/RosAria -x 0 -y -1" />
+  <arg name="r5" default="-model robot5 -robot_namespace robot5/RosAria -x 0 -y -2" />
+
+
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <!-- include two nodes gazebo (server) and gazebo_gui (client) -->
 	  <arg name="world_name" value="$(arg world_name)" />
     </include>
 
-  <arg name="urdf" default="$(find amr_robots_description)/urdf/pioneer3at.urdf" />
-  <arg name="name" default="robot1" />
-  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg urdf)" />
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" 
-    args="-param robot_description -urdf -model $(arg name) -robot_namespace $(arg name)/RosAria -x 0 -y 0" />
+
+  <node name="spawn_urdf_r1" pkg="gazebo_ros" type="spawn_model" 
+    args="-param robot_description -urdf $(arg r1)" />
+  <node name="spawn_urdf_r2" pkg="gazebo_ros" type="spawn_model" 
+    args="-param robot_description -urdf $(arg r2)" />
+  <node name="spawn_urdf_r3" pkg="gazebo_ros" type="spawn_model" 
+    args="-param robot_description -urdf $(arg r3)" />
+  <node name="spawn_urdf_r4" pkg="gazebo_ros" type="spawn_model" 
+    args="-param robot_description -urdf $(arg r4)" />
+  <node name="spawn_urdf_r5" pkg="gazebo_ros" type="spawn_model" 
+    args="-param robot_description -urdf $(arg r5)" />
+  
   <!--node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(arg urdf)" -->
   <!--remap from="/sim_p3at/cmd_vel" to="/robot1/RosAria/cmd_vel" /-->
   <!--node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" -->

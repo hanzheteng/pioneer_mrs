@@ -1,0 +1,17 @@
+<launch>
+	<arg name="hostname" default="robot1"/>
+	<arg name="pose" default="odom"/>
+
+	<node name="handpoint_node" pkg="pioneer_mrs" type="handpoint_node" output="screen">
+	    <param name="hostname" type="string" value="$(arg hostname)"/>
+		<param name="pose" type="string" value="$(arg pose)"/>
+		</node>
+	<node name="trajectory_node" pkg="pioneer_mrs" type="trajectory_node" output="screen">
+	    <param name="hostname" type="string" value="$(arg hostname)"/>
+		<param name="pose" type="string" value="$(arg pose)"/>
+		</node>
+	<node name="algorithm_node" pkg="pioneer_mrs" type="algorithm_node" output="screen">
+	    <param name="hostname" type="string" value="$(arg hostname)"/>
+		<param name="pose" type="string" value="$(arg pose)"/>
+		</node>
+</launch>
