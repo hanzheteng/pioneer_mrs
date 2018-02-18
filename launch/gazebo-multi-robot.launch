@@ -1,5 +1,5 @@
 <launch>
-	<arg name="pose" default="odom" />
+	<arg name="pose" default="gazebo" />
 
 	<include file="$(find pioneer_mrs)/config/robot-gazebo.xml" ns="robot1">
 		<arg name="hostname" value="robot1" />

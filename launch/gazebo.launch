@@ -4,11 +4,11 @@
   <arg name="world_name" default="worlds/empty.world" />
   <arg name="urdf" default="$(find pioneer_mrs)/config/pioneer3at.urdf" />
   <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg urdf)" />
-  <arg name="r1" default="-model robot1 -robot_namespace robot1/RosAria -x 0 -y 2" />
-  <arg name="r2" default="-model robot2 -robot_namespace robot2/RosAria -x 0 -y 1" />
-  <arg name="r3" default="-model robot3 -robot_namespace robot3/RosAria -x 0 -y 0" />
-  <arg name="r4" default="-model robot4 -robot_namespace robot4/RosAria -x 0 -y -1" />
-  <arg name="r5" default="-model robot5 -robot_namespace robot5/RosAria -x 0 -y -2" />
+  <arg name="r1" default="-model robot1 -robot_namespace robot1/gazebo -x 0 -y 2" />
+  <arg name="r2" default="-model robot2 -robot_namespace robot2/gazebo -x 0 -y 1" />
+  <arg name="r3" default="-model robot3 -robot_namespace robot3/gazebo -x 0 -y 0" />
+  <arg name="r4" default="-model robot4 -robot_namespace robot4/gazebo -x 0 -y -1" />
+  <arg name="r5" default="-model robot5 -robot_namespace robot5/gazebo -x 0 -y -2" />
 
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">

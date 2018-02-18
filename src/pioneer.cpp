@@ -21,9 +21,10 @@ Pioneer::Pioneer(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
 
   if(POSE == "vicon")
     vicon_pose_sub = nh.subscribe("/vicon/" + HOSTNAME + "/" + HOSTNAME, 1, &Pioneer::viconPoseCallBack, this);
-  else 
+  else if(POSE == "gazebo")
+    gazebo_pose_sub = nh.subscribe("gazebo/odom", 1, &Pioneer::gazeboPoseCallBack, this);
+  else
     odom_pose_sub = nh.subscribe("RosAria/pose", 1, &Pioneer::odomPoseCallBack, this);
-
 }
 
 
@@ -50,6 +51,25 @@ void Pioneer::odomPoseCallBack(const nav_msgs::Odometry& msg)
   this->pose_hp.x = pose.x + HANDPOINT_OFFSET * cos(pose.theta);
   this->pose_hp.y = pose.y + HANDPOINT_OFFSET * sin(pose.theta);
   ROS_DEBUG_STREAM("odom: theta="<<pose_hp.theta<<"; x_hp="<<pose_hp.x<<"; y_hp="<<pose_hp.y<<";\n");
+}
+
+
+void Pioneer::gazeboPoseCallBack(const nav_msgs::Odometry& msg)
+{
+  // transform quaternion to Euler angle
+  tf::Quaternion q(msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z, msg.pose.pose.orientation.w);
+  tf::Matrix3x3 m(q);
+  double roll, pitch, yaw;
+  m.getRPY(roll, pitch, yaw);
+  this->pose_hp.theta = yaw; //yaw from -3.14 to 3.14, left side is the positive number
+
+  // convert center pose to handpoint pose
+  geometry_msgs::Pose2D pose; // center pose
+  pose.x = msg.pose.pose.position.x;
+  pose.y = msg.pose.pose.position.y;
+  this->pose_hp.x = pose.x + HANDPOINT_OFFSET * cos(pose.theta);
+  this->pose_hp.y = pose.y + HANDPOINT_OFFSET * sin(pose.theta);
+  ROS_DEBUG_STREAM("gazebo: theta="<<pose_hp.theta<<"; x_hp="<<pose_hp.x<<"; y_hp="<<pose_hp.y<<";\n");
 }
 
 

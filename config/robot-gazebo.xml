@@ -5,6 +5,8 @@
 	<node name="handpoint_node" pkg="pioneer_mrs" type="handpoint_node" output="screen">
 	    <param name="hostname" type="string" value="$(arg hostname)"/>
 		<param name="pose" type="string" value="$(arg pose)"/>
+		<!-- remap cmd_vel topic to gazebo namespace-->
+		<remap from="RosAria/cmd_vel" to="gazebo/cmd_vel" />
 		</node>
 	<node name="trajectory_node" pkg="pioneer_mrs" type="trajectory_node" output="screen">
 	    <param name="hostname" type="string" value="$(arg hostname)"/>

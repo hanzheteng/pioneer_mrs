@@ -18,6 +18,7 @@ class Pioneer
 
   public:
     void odomPoseCallBack(const nav_msgs::Odometry &);
+    void gazeboPoseCallBack(const nav_msgs::Odometry &);
     void viconPoseCallBack(const geometry_msgs::TransformStamped &);
 
   protected:
@@ -32,6 +33,7 @@ class Pioneer
 
     // topic init
     ros::Subscriber odom_pose_sub;
+    ros::Subscriber gazebo_pose_sub;
     ros::Subscriber vicon_pose_sub;
 };
 
