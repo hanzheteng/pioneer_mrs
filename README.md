@@ -69,7 +69,7 @@ If using Vicon:
 ### 2.2 Running on MobileSim Simulator
 You also need [ROSARIA](https://github.com/amor-ros-pkg/rosaria) package to connect to MobileSim simulator. Moreover, you need to install [MobileSim](http://robots.mobilerobots.com/wiki/MobileSim) on your laptop.
 
-Basically there are two steps:
+Basically there are three steps:
 1. run a MobileSim simulator and spawn five robots </br>
 `roslaunch pioneer_mrs mobilesim.launch`
 2. launch nodes on all five robots </br>
@@ -80,7 +80,7 @@ Basically there are two steps:
 ### 2.3 Running on Gazebo Simulator
 You do not need ROSARIA package here, since Gazebo will take charge of publishing `odom` information and dealing with `cmd_vel` commands. Gazebo is installed by default along with ROS if choosing `desktop-full` install. Moreover, for simulations of Pioneer 3-AT robots, you also need models and URDF files supplied by Mobile Robots Inc. by `git clone` [amr-ros-config](https://github.com/MobileRobots/amr-ros-config) meta-package.
 
-For a Gazebo simulator, there are three steps as well:
+Basically there are three steps:
 1. run a Gazebo simulator and spawn five robots </br>
 `roslaunch pioneer_mrs gazebo.launch`
 2. launch nodes on all five robots </br>
