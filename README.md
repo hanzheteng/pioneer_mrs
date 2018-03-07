@@ -55,32 +55,26 @@ Optional package:
 
 #### Sample Usage
 Basically there are only two steps:
-1. launch all five robots </br>
+1. launch nodes on all five robots </br>
 `roslaunch pioneer_mrs multi-robot.launch`
 2. launch nodes on commander </br>
 `roslaunch pioneer_mrs commander.launch`
 
 If using Vicon:
-1. launch all five robots </br>
+1. launch nodes on all five robots </br>
 `roslaunch pioneer_mrs multi-robot.launch pose:=vicon`
-2. start Vicon localization system </br>
-`roslaunch pioneer_mrs vicon.launch`
-3. launch nodes on commander </br>
+2. launch nodes on commander </br>
 `roslaunch pioneer_mrs commander.launch`
-
-Optional launch file:
-- launch one robot (e.g. robot1) </br>
-`roslaunch pioneer_mrs single-robot.launch machine:=robot1`
-- launch one robot with Vicon </br>
-`roslaunch pioneer_mrs single-robot.launch machine:=robot1 pose:=vicon`
 
 ### 2.2 Running on MobileSim Simulator
 You also need [ROSARIA](https://github.com/amor-ros-pkg/rosaria) package to connect to MobileSim simulator. Moreover, you need to install [MobileSim](http://robots.mobilerobots.com/wiki/MobileSim) on your laptop.
 
 Basically there are two steps:
-1. run a MobileSim simulator, spawn five robots and launch nodes </br>
+1. run a MobileSim simulator and spawn five robots </br>
 `roslaunch pioneer_mrs mobilesim.launch`
-2. launch nodes on commander </br>
+2. launch nodes on all five robots </br>
+`roslaunch pioneer_mrs multi-robot.launch machine:=mobilesim`
+3. launch nodes on commander </br>
 `roslaunch pioneer_mrs commander.launch`
 
 ### 2.3 Running on Gazebo Simulator
@@ -90,11 +84,22 @@ For a Gazebo simulator, there are three steps as well:
 1. run a Gazebo simulator and spawn five robots </br>
 `roslaunch pioneer_mrs gazebo.launch`
 2. launch nodes on all five robots </br>
-`roslaunch pioneer_mrs gazebo-multi-robot.launch`
+`roslaunch pioneer_mrs multi-robot.launch pose:=gazebo machine:=gazebo`
 3. launch nodes on commander </br>
 `roslaunch pioneer_mrs commander.launch`
 
 Notice: On real robots, movement commands only execute for 600ms because of WatchDog timeout mechanism; but in gazebo simulator, robots will keep moving towards the last direction. You may press space bar (stop command) to stop it.
+
+### 2.4 Single Robot Recoverary
+Optional launch file (e.g. robot1):
+- launch one robot </br>
+`roslaunch pioneer_mrs single-robot.launch hostname:=robot1`
+- launch one robot with Vicon </br>
+`roslaunch pioneer_mrs single-robot.launch hostname:=robot1 pose:=vicon`
+- launch one robot on MobileSim simulator </br>
+`roslaunch pioneer_mrs single-robot.launch hostname:=robot1 machine:=mobilesim`
+- launch one robot on Gazebo simulator </br>
+`roslaunch pioneer_mrs single-robot.launch hostname:=robot1 pose:=gazebo machine:=gazebo`
 
 ## 3. Robot Operating System
 ### 3.1 ROS Node Info

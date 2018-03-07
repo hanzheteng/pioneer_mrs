@@ -1,13 +1,16 @@
 <launch>
-	<arg name="machine" default="robot1" />
-	<arg name="pose" default="odom" />
+	<arg name="hostname" default="robot1"/>
+	<arg name="machine" default="remote"/> <!-- remote, mobilesim, or gazebo -->
+	<arg name="pose" default="odom" /> <!-- odom, vicon, or gazebo -->
+	<arg name="port" />
 
 	<include file="$(find pioneer_mrs)/config/robots.machine" />
 
-	<include file="$(find pioneer_mrs)/config/robot.xml" ns="$(arg machine)">
-		<arg name="hostname" value="$(arg machine)" />
-		<arg name="machine" value="$(arg machine)" />
+	<include file="$(find pioneer_mrs)/config/robot.xml" ns="$(arg hostname)">
+		<arg name="hostname" value="$(arg hostname)" />
+		<arg name="machine" value="$(arg hostname)" if="$(eval arg('machine') == 'remote')"/>
 		<arg name="pose" value="$(arg pose)" />
+		<arg name="port" value="$(eval 'localhost:810' + arg('hostname')[-1])" if="$(eval arg('machine') == 'mobilesim')"/>
 		</include>
 
 </launch>
