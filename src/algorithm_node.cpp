@@ -65,8 +65,8 @@ Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   for(int i=0;i<=4;i++)
   {
     if(i != HOSTNUM)
-      get_pose[i] = nh.serviceClient<pioneer_mrs::Pose2D>("/robot" + std::to_string(i+1) + "/get_pose"); 
-  }
+      get_pose[i] = nh.serviceClient<pioneer_mrs::Pose2D>("/robot" + std::to_string(i+1) + "/get_pose", true); 
+  }   // second argument is true ==> set persistent connections to TCP
   
   vel_hp_pub = nh.advertise<geometry_msgs::Vector3>("cmd_vel_hp", 1);
 }
@@ -206,7 +206,7 @@ int main(int argc, char **argv)
   ros::NodeHandle nh_private("~");
   Algorithm* algorithm = new Algorithm(nh, nh_private);
 
-  double T = 0.05; // sample period
+  double T = 0.1; // sample period
   ros::Rate rate(1/T);
   while(ros::ok())
   {
