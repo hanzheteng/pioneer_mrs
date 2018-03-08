@@ -65,7 +65,7 @@ Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   for(int i=0;i<=4;i++)
   {
     if(i != HOSTNUM)
-      get_pose[i] = nh.serviceClient<pioneer_mrs::Pose2D>("/robot" + std::to_string(i+1) + "/get_pose");
+      get_pose[i] = nh.serviceClient<pioneer_mrs::Pose2D>("/robot" + std::to_string(i+1) + "/get_pose"); 
   }
   
   vel_hp_pub = nh.advertise<geometry_msgs::Vector3>("cmd_vel_hp", 1);
@@ -148,7 +148,7 @@ Point2D Algorithm::gradient(Point2D input)
 
 void Algorithm::updateNeighborPose()
 {
-  ROS_DEBUG_STREAM(HOSTNAME + " Updating Neighbor Pose.");
+  ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: Updating neighbor pose.");
   pioneer_mrs::Pose2D srv[5];
   for(int i=0;i<=4;i++)
   {
@@ -163,7 +163,7 @@ void Algorithm::updateNeighborPose()
       pose_j[i].y = srv[i].response.y;
     }
   }
-  ROS_DEBUG_STREAM(HOSTNAME + " Updated Neighbor Pose.");
+  ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: Updated neighbor pose.");
   pose_i.x = pose_hp.x;
   pose_i.y = pose_hp.y;
 }
@@ -181,14 +181,15 @@ void Algorithm::computeVelocity(double T)
     {
       if(comm_state[i])
       {
-        sgn = sign( (pose_j[i] - pose_offset[i]) - pose_i)* Q;
+        //sgn = sign( (pose_j[i] - pose_offset[i]) - pose_i)* Q;
+        sgn = ( (pose_j[i] - pose_offset[i]) - pose_i)* Q;
         vel = vel + sgn;
         //this->Q += T;
       }
     }
     grad = gradient( pose_i );
     vel = vel - grad;
-    ROS_DEBUG_STREAM(HOSTNAME + " Vel2D: x="<<vel.x<<"; y="<<vel.y<<";\n");
+    ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: Vel2D x="<<vel.x<<"; y="<<vel.y<<";\n");
 
     vel_hp.x = vel.x;
     vel_hp.y = vel.y;

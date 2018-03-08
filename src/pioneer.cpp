@@ -50,7 +50,7 @@ void Pioneer::odomPoseCallBack(const nav_msgs::Odometry& msg)
   pose.y = pose.y - (HOSTNUM - 2); // initialization offset: put robot 1-5 on a row, with 1 meter space
   this->pose_hp.x = pose.x + HANDPOINT_OFFSET * cos(pose.theta);
   this->pose_hp.y = pose.y + HANDPOINT_OFFSET * sin(pose.theta);
-  ROS_DEBUG_STREAM("odom: theta="<<pose_hp.theta<<"; x_hp="<<pose_hp.x<<"; y_hp="<<pose_hp.y<<";\n");
+  ROS_DEBUG_STREAM(HOSTNAME + " odom: theta="<<pose_hp.theta<<"; x_hp="<<pose_hp.x<<"; y_hp="<<pose_hp.y<<";\n");
 }
 
 
@@ -69,7 +69,7 @@ void Pioneer::gazeboPoseCallBack(const nav_msgs::Odometry& msg)
   pose.y = msg.pose.pose.position.y;
   this->pose_hp.x = pose.x + HANDPOINT_OFFSET * cos(pose.theta);
   this->pose_hp.y = pose.y + HANDPOINT_OFFSET * sin(pose.theta);
-  ROS_DEBUG_STREAM("gazebo: theta="<<pose_hp.theta<<"; x_hp="<<pose_hp.x<<"; y_hp="<<pose_hp.y<<";\n");
+  ROS_DEBUG_STREAM(HOSTNAME + " gazebo: theta="<<pose_hp.theta<<"; x_hp="<<pose_hp.x<<"; y_hp="<<pose_hp.y<<";\n");
 }
 
 
@@ -84,7 +84,7 @@ void Pioneer::viconPoseCallBack(const geometry_msgs::TransformStamped& msg)
   this->pose_hp.theta = yaw;
   this->pose_hp.x = msg.transform.translation.x;
   this->pose_hp.y = msg.transform.translation.y;
-  ROS_DEBUG_STREAM("vicon: theta="<<pose_hp.theta<<"; x_hp="<<pose_hp.x<<"; y_hp="<<pose_hp.y<<";\n");
+  ROS_DEBUG_STREAM(HOSTNAME + " vicon: theta="<<pose_hp.theta<<"; x_hp="<<pose_hp.x<<"; y_hp="<<pose_hp.y<<";\n");
 }
 
 

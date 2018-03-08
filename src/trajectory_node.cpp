@@ -65,7 +65,7 @@ void Trajectory::trajectoryCallBack(const trajectory_msgs::JointTrajectoryPoint&
     double ux, uy;
     ux = vx_ref - TUNE_K * (x_hp - x_ref);
     uy = vy_ref - TUNE_K * (y_hp - y_ref);
-    ROS_DEBUG_STREAM("ux="<<ux<<"; uy="<<uy<<";\n");
+    ROS_DEBUG_STREAM(HOSTNAME + " trajectory_node: ux="<<ux<<"; uy="<<uy<<";\n");
 
     // pub vel_hp
     this->vel_hp.x = ux;

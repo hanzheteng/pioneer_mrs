@@ -41,7 +41,7 @@ int main(int argc, char **argv)
       y_ref = R * sin(W*t + i*phase);
       vx_ref = V * cos(W*t + i*phase);
       vy_ref = V * sin(W*t + i*phase);
-      ROS_DEBUG_STREAM("robot"<<i+1<<": x_ref="<<x_ref<<"; y_ref="<<y_ref<<"; vx_ref="<<vx_ref<<"; vy_ref="<<vy_ref<<";\n");
+      ROS_DEBUG_STREAM("trajectory_cmd: robot"<<i+1<<": x_ref="<<x_ref<<"; y_ref="<<y_ref<<"; vx_ref="<<vx_ref<<"; vy_ref="<<vy_ref<<";\n");
 
       point[i].positions[0] = x_ref;
       point[i].positions[1] = y_ref;

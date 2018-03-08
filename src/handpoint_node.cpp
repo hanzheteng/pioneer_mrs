@@ -49,7 +49,7 @@ void HandPoint::cmdVelHandPointCallBack(const geometry_msgs::Vector3& msg)
    */
   v = x*cos(theta) + y*sin(theta);
   w = ( x*(-sin(theta)) + y*cos(theta) )/HANDPOINT_OFFSET; 
-  ROS_DEBUG_STREAM("theta="<<theta<<"; x="<<x<<"; y="<<y<<"; v="<<v<<"; w="<<w<<";\n");
+  ROS_DEBUG_STREAM(HOSTNAME + " handpoint_node: theta="<<theta<<"; x="<<x<<"; y="<<y<<"; v="<<v<<"; w="<<w<<";\n");
 
   // pub vel
   vel.linear.x = v;
