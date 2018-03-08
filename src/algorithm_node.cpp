@@ -44,20 +44,20 @@ Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   Q(0.2),
   STATE(false)
 {
-  pose_offset[0].x = -1.5;
-  pose_offset[0].y = 1.5;
+  pose_offset[0].x = -1;
+  pose_offset[0].y = 1;
 
-  pose_offset[1].x = 1.5;
-  pose_offset[1].y = 1.5;
+  pose_offset[1].x = 1;
+  pose_offset[1].y = 1;
 
   pose_offset[2].x = 0;
   pose_offset[2].y = 0;
 
-  pose_offset[3].x = 1.5;
-  pose_offset[3].y = -1.5;
+  pose_offset[3].x = 1;
+  pose_offset[3].y = -1;
 
-  pose_offset[4].x = -1.5;
-  pose_offset[4].y = -1.5;
+  pose_offset[4].x = -1;
+  pose_offset[4].y = -1;
 
   miss_state_sub = nh.subscribe("mission_state", 1, &Algorithm::missionStateCallBack, this);
   comm_state_sub = nh.subscribe("comm_state", 1, &Algorithm::communicationStateCallBack, this);
@@ -112,35 +112,46 @@ Point2D Algorithm::gradient(Point2D input)
   Point2D point;
   switch(HOSTNUM)
   {
-    // f(x) = 0.5x^2 + 0.5y^2
-    // g(x) = [x, y]
+    // f(x) = 0.5(x+1)^2 + 0.5(y-1)^2
+    // g(x) = [x+1, y-1]
     case 0:
-      point.x = x;
-      point.y = y;
+      point.x = x + 1;
+      point.y = y - 1;
+      break;
     
-    // f(x) = 0.5(x-1)^2 + 0.5y^2
-    // g(x) = [x-1, y]
+    // f(x) = 0.5(x-1)^2 + 0.5(y-1)^2
+    // g(x) = [x-1, y-1]
     case 1:
       point.x = x - 1;
-      point.y = y;
-
-    // f(x) = 0.5(x+1)^2 + 0.5y^2
-    // g(x) = [x+1, y]
-    case 2:
-      point.x = x + 1;
-      point.y = y;
-
-    // f(x) = 0.5x^2 + 0.5(y-1)^2
-    // g(x) = [x, y-1]
-    case 3:
-      point.x = x;
       point.y = y - 1;
+      break;
 
-    // f(x) = 0.5x^2 + 0.5(y+1)^2
-    // g(x) = [x, y+1]
-    case 4:
+    // f(x) = 0.5x^2 + 0.5y^2
+    // g(x) = [x, y]
+    case 2:
       point.x = x;
+      point.y = y;
+      break;
+
+    // f(x) = 0.5(x-1)^2 + 0.5(y+1)^2
+    // g(x) = [x-1, y+1]
+    case 3:
+      point.x = x - 1;
       point.y = y + 1;
+      break;
+
+    // f(x) = 0.5(x+1)^2 + 0.5(y+1)^2
+    // g(x) = [x+1, y+1]
+    case 4:
+      point.x = x + 1;
+      point.y = y + 1;
+      break;
+
+    default:
+      point.x = x;
+      point.y = y;
+      ROS_ERROR_STREAM(HOSTNAME + " algorithm_node: switch function ERROR. ");
+      break;
   }
   return point;
 }
@@ -148,6 +159,7 @@ Point2D Algorithm::gradient(Point2D input)
 
 void Algorithm::updateNeighborPose()
 {
+  // update neighbor pose
   ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: Updating neighbor pose.");
   pioneer_mrs::Pose2D srv[5];
   for(int i=0;i<=4;i++)
@@ -164,6 +176,8 @@ void Algorithm::updateNeighborPose()
     }
   }
   ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: Updated neighbor pose.");
+  
+  // update my pose
   pose_i.x = pose_hp.x;
   pose_i.y = pose_hp.y;
 }
@@ -176,20 +190,23 @@ void Algorithm::computeVelocity(double T)
     updateNeighborPose();
     pose_i = pose_i - pose_offset[HOSTNUM];
     Point2D vel, sgn, grad;
-
+    // sgn makes the team reach a consensus
+    // grad makes the consensus point stick to the optimal (desired) point
     for(int i=0; i<=4; i++)
     {
       if(comm_state[i])
       {
         //sgn = sign( (pose_j[i] - pose_offset[i]) - pose_i)* Q;
-        sgn = ( (pose_j[i] - pose_offset[i]) - pose_i)* Q;
+        sgn = ( (pose_j[i] - pose_offset[i]) - pose_i ) * Q;
         vel = vel + sgn;
+        ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: sgn"<<i+1<<"  Vx="<<sgn.x<<"; Vy="<<sgn.y<<";");
         //this->Q += T;
       }
     }
     grad = gradient( pose_i );
     vel = vel - grad;
-    ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: Vel2D x="<<vel.x<<"; y="<<vel.y<<";\n");
+    ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: grad  Gx="<<grad.x<<"; Gy="<<grad.y<<";");
+    ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: Vel2D Vx="<<vel.x<<"; Vy="<<vel.y<<";\n");
 
     vel_hp.x = vel.x;
     vel_hp.y = vel.y;
