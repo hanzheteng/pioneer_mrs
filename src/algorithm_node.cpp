@@ -4,16 +4,20 @@
 #include <pioneer_mrs/Point2D.h>
 #include <pioneer_mrs/Pose2D.h>
 #include <geometry_msgs/Vector3.h>
+#include <dynamic_reconfigure/server.h>
+#include <pioneer_mrs/FormationConfig.h>
 
 class Algorithm : public Pioneer
 {
   public:
     Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private);
+    ~Algorithm();
 
   public:
     void computeVelocity(double);
     void missionStateCallBack(const pioneer_mrs::MissionState &);
     void communicationStateCallBack(const pioneer_mrs::CommunicationState &);
+    void dynamicReconfigureCallBack(pioneer_mrs::FormationConfig &, uint32_t);
     void updateNeighborPose();
   
   protected:
@@ -22,6 +26,7 @@ class Algorithm : public Pioneer
     
   protected:
     double Q;
+    double FORMATION_OFFSET;
     Point2D pose_i;
     Point2D pose_offset[5];
 
@@ -36,13 +41,16 @@ class Algorithm : public Pioneer
 
     geometry_msgs::Vector3 vel_hp;
     ros::Publisher vel_hp_pub;
+
+    dynamic_reconfigure::Server<pioneer_mrs::FormationConfig> *dynamic_reconfigure_server;
 };
 
 
 Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   Pioneer(nh, nh_private),
   Q(0.2),
-  STATE(false)
+  STATE(false),
+  FORMATION_OFFSET(0)
 {
   pose_offset[0].x = -1;
   pose_offset[0].y = 1;
@@ -69,6 +77,15 @@ Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   }   // second argument is true ==> set persistent connections to TCP
   
   vel_hp_pub = nh.advertise<geometry_msgs::Vector3>("cmd_vel_hp", 1);
+
+  dynamic_reconfigure_server = new dynamic_reconfigure::Server<pioneer_mrs::FormationConfig>;
+  dynamic_reconfigure_server->setCallback(boost::bind(&Algorithm::dynamicReconfigureCallBack, this, _1, _2));
+}
+
+Algorithm::~Algorithm()
+{
+  delete dynamic_reconfigure_server;
+  dynamic_reconfigure_server = NULL;
 }
 
 
@@ -84,6 +101,16 @@ void Algorithm::communicationStateCallBack(const pioneer_mrs::CommunicationState
     this->comm_state[i] = msg.state[i];
 }
 
+void Algorithm::dynamicReconfigureCallBack(pioneer_mrs::FormationConfig &config, uint32_t level)
+{
+  double value;
+  value = config.formation_offset;
+  if(value != this->FORMATION_OFFSET && value > 0)
+  {
+    ROS_INFO_STREAM(HOSTNAME + " Setting FORMATION_OFFSET: "<<value);
+    this->FORMATION_OFFSET = value;
+  }
+}
 
 Point2D Algorithm::sign(Point2D input)
 {
@@ -115,35 +142,35 @@ Point2D Algorithm::gradient(Point2D input)
     // f(x) = 0.5(x+1)^2 + 0.5(y-1)^2
     // g(x) = [x+1, y-1]
     case 0:
-      point.x = x + 1;
+      point.x = x + 1 - FORMATION_OFFSET;
       point.y = y - 1;
       break;
     
     // f(x) = 0.5(x-1)^2 + 0.5(y-1)^2
     // g(x) = [x-1, y-1]
     case 1:
-      point.x = x - 1;
+      point.x = x - 1 - FORMATION_OFFSET;
       point.y = y - 1;
       break;
 
     // f(x) = 0.5x^2 + 0.5y^2
     // g(x) = [x, y]
     case 2:
-      point.x = x;
+      point.x = x - FORMATION_OFFSET;
       point.y = y;
       break;
 
     // f(x) = 0.5(x-1)^2 + 0.5(y+1)^2
     // g(x) = [x-1, y+1]
     case 3:
-      point.x = x - 1;
+      point.x = x - 1 - FORMATION_OFFSET;
       point.y = y + 1;
       break;
 
     // f(x) = 0.5(x+1)^2 + 0.5(y+1)^2
     // g(x) = [x+1, y+1]
     case 4:
-      point.x = x + 1;
+      point.x = x + 1 - FORMATION_OFFSET;
       point.y = y + 1;
       break;
 

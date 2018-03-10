@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   trajectory_msgs
   tf
+  dynamic_reconfigure
 )
 
 ## System dependencies are found with CMake's conventions
@@ -90,10 +91,9 @@ generate_messages(DEPENDENCIES
 ##     and list every .cfg file to be processed
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
+generate_dynamic_reconfigure_options(
+  cfg/Formation.cfg
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -161,7 +161,7 @@ add_executable(comm_state_cmd
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(handpoint_node pioneer_mrs_generate_messages)
-add_dependencies(algorithm_node pioneer_mrs_generate_messages)
+add_dependencies(algorithm_node pioneer_mrs_generate_messages pioneer_mrs_gencfg)
 add_dependencies(trajectory_node pioneer_mrs_generate_messages)
 add_dependencies(comm_state_cmd pioneer_mrs_generate_messages)
 
