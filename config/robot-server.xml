@@ -1,0 +1,13 @@
+<launch>
+	<arg name="hostname" default="robot1"/>
+	<arg name="machine" default="commander"/>
+	<arg name="pose" default="odom" />
+	<arg name="port" default="/dev/ttyS0" />
+
+	<node name="handpoint_node" pkg="pioneer_mrs" type="handpoint_node" output="screen" machine="$(arg machine)">
+	    <param name="hostname" type="string" value="$(arg hostname)"/>
+		<param name="pose" type="string" value="$(arg pose)"/>
+		<!-- remap cmd_vel topic to gazebo namespace-->
+		<remap from="RosAria/cmd_vel" to="gazebo/cmd_vel" if="$(eval arg('pose') == 'gazebo')" />
+		</node>
+</launch>

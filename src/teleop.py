@@ -16,6 +16,8 @@ For selected robots:
     Press 'space bar' to stop the robot.
     Press 't' to start a trajectory mission.
     Press 'm' to start a multi-robot algorithm mission.
+    Press 'u' to move the team forward.
+    Press 'd' to move the team backward.
     Press 's' to stop the mission.
 """
 
@@ -26,7 +28,7 @@ robotSwitch = [False, False, False, False, False]
 movementList = {'\x1b[A':(1,0), '\x1b[B':(-1,0), '\x1b[C':(0,-1), '\x1b[D':(0,1), ' ':(0,0)}
 
 # trajectory, multi-robot algorithm, stop
-missionList = ('t', 'm', 's')
+missionList = ('t', 'm', 's', 'u', 'd')
 
 
 def getKey():
@@ -55,6 +57,8 @@ def teleoperation():
     pub_cmd_4 = rospy.Publisher('/robot4/mission_state', MissionState, queue_size=1)
     pub_cmd_5 = rospy.Publisher('/robot5/mission_state', MissionState, queue_size=1)
     pub_cmd = [pub_cmd_1, pub_cmd_2, pub_cmd_3, pub_cmd_4, pub_cmd_5]
+
+    formation_offset = 0
 
     print welcomeMessage
 
@@ -90,9 +94,20 @@ def teleoperation():
                 rospy.loginfo("start a trajectory mission")
             elif key == 'm':
                 cmd.algorithm = True
+                cmd.formation_offset = formation_offset
                 rospy.loginfo("start a multi-robot algorithm mission")
+            elif key == 'u':
+                cmd.algorithm = True
+                formation_offset += 0.1
+                cmd.formation_offset = formation_offset
+                rospy.loginfo("formation_offset = " + str(formation_offset))
+            elif key == 'd':
+                cmd.algorithm = True
+                formation_offset -= 0.1
+                cmd.formation_offset = formation_offset
+                rospy.loginfo("formation_offset = " + str(formation_offset))
             else:
-                rospy.loginfo("stop the mission")
+                rospy.loginfo("stop the mission") 
             for i in range(5):
                 if robotSwitch[i]:
                     pub_cmd[i].publish(cmd)

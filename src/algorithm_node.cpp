@@ -73,9 +73,12 @@ Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   for(int i=0;i<=4;i++)
   {
     if(i != HOSTNUM)
+    {
       get_pose[i] = nh.serviceClient<pioneer_mrs::Pose2D>("/robot" + std::to_string(i+1) + "/get_pose", true); 
-  }   // second argument is true ==> set persistent connections to TCP
-  
+      // second argument is true ==> set persistent connections to TCP
+      ROS_INFO_STREAM(HOSTNAME + " get pose from: robot"<<i+1);
+    }
+  }   
   vel_hp_pub = nh.advertise<geometry_msgs::Vector3>("cmd_vel_hp", 1);
 
   dynamic_reconfigure_server = new dynamic_reconfigure::Server<pioneer_mrs::FormationConfig>;
@@ -92,6 +95,12 @@ Algorithm::~Algorithm()
 void Algorithm::missionStateCallBack(const pioneer_mrs::MissionState& msg)
 {
   this->STATE = msg.algorithm;
+  double value = msg.formation_offset;
+  if(value != FORMATION_OFFSET)
+  {
+    this->FORMATION_OFFSET = value;
+    ROS_INFO_STREAM(HOSTNAME + " Receiving FORMATION_OFFSET: "<<value);
+  }
 }
 
 
@@ -142,35 +151,35 @@ Point2D Algorithm::gradient(Point2D input)
     // f(x) = 0.5(x+1)^2 + 0.5(y-1)^2
     // g(x) = [x+1, y-1]
     case 0:
-      point.x = x + 1 - FORMATION_OFFSET;
+      point.x = x + 1;
       point.y = y - 1;
       break;
     
     // f(x) = 0.5(x-1)^2 + 0.5(y-1)^2
     // g(x) = [x-1, y-1]
     case 1:
-      point.x = x - 1 - FORMATION_OFFSET;
+      point.x = x - 1;
       point.y = y - 1;
       break;
 
     // f(x) = 0.5x^2 + 0.5y^2
     // g(x) = [x, y]
     case 2:
-      point.x = x - FORMATION_OFFSET;
+      point.x = x;
       point.y = y;
       break;
 
     // f(x) = 0.5(x-1)^2 + 0.5(y+1)^2
     // g(x) = [x-1, y+1]
     case 3:
-      point.x = x - 1 - FORMATION_OFFSET;
+      point.x = x - 1;
       point.y = y + 1;
       break;
 
     // f(x) = 0.5(x+1)^2 + 0.5(y+1)^2
     // g(x) = [x+1, y+1]
     case 4:
-      point.x = x + 1 - FORMATION_OFFSET;
+      point.x = x + 1;
       point.y = y + 1;
       break;
 
@@ -180,6 +189,7 @@ Point2D Algorithm::gradient(Point2D input)
       ROS_ERROR_STREAM(HOSTNAME + " algorithm_node: switch function ERROR. ");
       break;
   }
+  point.x -= FORMATION_OFFSET;
   return point;
 }
 
@@ -200,6 +210,7 @@ void Algorithm::updateNeighborPose()
     {
       pose_j[i].x = srv[i].response.x;
       pose_j[i].y = srv[i].response.y;
+
     }
   }
   ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: Updated neighbor pose.");
@@ -215,22 +226,23 @@ void Algorithm::computeVelocity(double T)
   if(STATE)
   {
     updateNeighborPose();
-    pose_i = pose_i - pose_offset[HOSTNUM];
+    Point2D pose_i_offset = pose_i - pose_offset[HOSTNUM];
     Point2D vel, sgn, grad;
     // sgn makes the team reach a consensus
     // grad makes the consensus point stick to the optimal (desired) point
     for(int i=0; i<=4; i++)
     {
-      if(comm_state[i])
+      if(comm_state[i] && pose_j[i].x != 0)
       {
         //sgn = sign( (pose_j[i] - pose_offset[i]) - pose_i)* Q;
-        sgn = ( (pose_j[i] - pose_offset[i]) - pose_i ) * Q;
+        sgn = ( (pose_j[i] - pose_offset[i]) - pose_i_offset ) * Q;
         vel = vel + sgn;
+        ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: pose_j"<<i+1<<"  Vx="<<pose_j[i].x<<"; Vy="<<pose_j[i].y<<";");
         ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: sgn"<<i+1<<"  Vx="<<sgn.x<<"; Vy="<<sgn.y<<";");
         //this->Q += T;
       }
     }
-    grad = gradient( pose_i );
+    grad = gradient( pose_i_offset );
     vel = vel - grad;
     ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: grad  Gx="<<grad.x<<"; Gy="<<grad.y<<";");
     ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: Vel2D Vx="<<vel.x<<"; Vy="<<vel.y<<";\n");
