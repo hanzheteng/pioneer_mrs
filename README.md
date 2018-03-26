@@ -39,6 +39,8 @@ Before using this package to drive your robots, you may configure your platform 
 5. Your commander (laptop) is able to SSH to all robots via public key (instead of password)
 6. Onboard computers are able to get access to the microcontroller via serial post (add user to *dialout* group)
 
+For detailed information regarding how to set up the whole system, please refer to the [wiki](https://github.com/hanzheteng/pioneer_mrs/wiki) page.
+
 Moreover, there are two suggestions which is not necessary for this system but may be useful for your development.
 - You may install a [teamviewer](https://www.teamviewer.us/) software on your laptop and robots so that you can remote login into your onboard computers.
 - For IDE, I recommend [RoboWare Studio](http://www.roboware.me/#/home), which is especially designed for ROS developers. Another alternative is [KDevelop](https://www.kdevelop.org/), which is a cross-platform IDE.
@@ -54,10 +56,12 @@ Optional package:
 - If you want to use [VICON](https://www.vicon.com/) motion capture system, you also need to `git clone` and `catkin_make` [vicon_bridge](http://wiki.ros.org/vicon_bridge) package.
 
 #### Sample Usage
-Basically there are only two steps:
-1. launch nodes on all five robots </br>
+Basically there are several steps:
+1. launch server nodes on all five robots </br>
+`roslaunch pioneer_mrs multi-robot-server.launch`
+2. launch client nodes on all five robots </br>
 `roslaunch pioneer_mrs multi-robot.launch`
-2. launch nodes on commander </br>
+3. launch nodes on commander </br>
 `roslaunch pioneer_mrs commander.launch`
 
 If using Vicon:
@@ -69,23 +73,27 @@ If using Vicon:
 ### 2.2 Running on MobileSim Simulator
 You also need [ROSARIA](https://github.com/amor-ros-pkg/rosaria) package to connect to MobileSim simulator. Moreover, you need to install [MobileSim](http://robots.mobilerobots.com/wiki/MobileSim) on your laptop.
 
-Basically there are three steps:
+Basically there are several steps:
 1. run a MobileSim simulator and spawn five robots </br>
 `roslaunch pioneer_mrs mobilesim.launch`
-2. launch nodes on all five robots </br>
+2. launch server nodes on all five robots </br>
+`roslaunch pioneer_mrs multi-robot-server.launch machine:=mobilesim`
+3. launch client nodes on all five robots </br>
 `roslaunch pioneer_mrs multi-robot.launch machine:=mobilesim`
-3. launch nodes on commander </br>
+4. launch nodes on commander </br>
 `roslaunch pioneer_mrs commander.launch`
 
 ### 2.3 Running on Gazebo Simulator
 You do not need ROSARIA package here, since Gazebo will take charge of publishing `odom` information and dealing with `cmd_vel` commands. Gazebo is installed by default along with ROS if choosing `desktop-full` install. Moreover, for simulations of Pioneer 3-AT robots, you also need models and URDF files supplied by Mobile Robots Inc. by `git clone` [amr-ros-config](https://github.com/MobileRobots/amr-ros-config) meta-package.
 
-Basically there are three steps:
+Basically there are several steps:
 1. run a Gazebo simulator and spawn five robots </br>
 `roslaunch pioneer_mrs gazebo.launch`
-2. launch nodes on all five robots </br>
+2. launch server nodes on all five robots </br>
+`roslaunch pioneer_mrs multi-robot-server.launch pose:=gazebo machine:=gazebo`
+3. launch client nodes on all five robots </br>
 `roslaunch pioneer_mrs multi-robot.launch pose:=gazebo machine:=gazebo`
-3. launch nodes on commander </br>
+4. launch nodes on commander </br>
 `roslaunch pioneer_mrs commander.launch`
 
 Notice: On real robots, movement commands only execute for 600ms because of WatchDog timeout mechanism; but in gazebo simulator, robots will keep moving towards the last direction. You may press space bar (stop command) to stop it.
@@ -265,9 +273,11 @@ Note: `robot#` represents any robot label from 1 to 5.
 - V1.1 (Jan 15, 2018) The MRS control framework works well with new features, but the algorithm node need to be updated.
 - V1.1.4 (Feb 5, 2018) The algorithm node works well on both MobileSim simulator and empirical experiments. The Gazebo simulator still has problems to be resolved.
 - V1.2 (Feb 18, 2018) The multi-robot system works well on MobileSim simulator, Gazebo simulator and empirical experiments (localization done by either odometry, Vicon system, or Gazebo simulator.)
+- V1.3 (Mar 17, 2018) Add offset adjestment to the existing formation based on optimal-point algorithm; Launch files may have some problems because of improper launch sequence. (Senior Design project done in this version)
 
 ## 5. Debug FAQ
 Most of the time, you can use `roswtf` command to diagnose your problem.
 1. If `roslaunch` or `rosrun` cannot autocomplete by `Tab` key, first check if your search path covers the package by `env | grep ROS`. If it already exist in the path, try `rospack profile` or reboot your system.
 2. If prompt `process has died, exit code -11`, you may access data in the code which was not initialized.
 3. If prompt `The following roslaunch remote processes failed to register: * xxxx (timeout 10.0s)`, your network may have a problem, including hosts file, ROS_MASTER_URI, env loader, etc. (e.g. the hostname of your laptop was not exactly the same as you set in /etc/hosts file)
+4. Launch sequence problem: Due to the client-server RPC mechanism of 'Pose2D' service, the server node 'handpoint_node' must launch earlier than other client nodes, otherwise the connection would not be established in the initialization.
