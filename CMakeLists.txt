@@ -15,7 +15,6 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   nav_msgs
   geometry_msgs
-  trajectory_msgs
   tf
   dynamic_reconfigure
 )
@@ -138,16 +137,10 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/pioneer_mrs_node.cpp)
 add_executable(algorithm_node
-  src/algorithm_node.cpp src/pioneer.cpp
+  src/algorithm_node.cpp
 )
-add_executable(handpoint_node
-  src/handpoint_node.cpp src/pioneer.cpp 
-)
-add_executable(trajectory_node
-  src/trajectory_node.cpp src/pioneer.cpp
-)
-add_executable(trajectory_cmd
-  src/trajectory_cmd.cpp
+add_executable(pioneer_server
+  src/pioneer_server.cpp
 )
 add_executable(comm_state_cmd
   src/comm_state_cmd.cpp
@@ -160,9 +153,8 @@ add_executable(comm_state_cmd
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(handpoint_node pioneer_mrs_generate_messages)
+add_dependencies(pioneer_server pioneer_mrs_generate_messages pioneer_mrs_gencfg)
 add_dependencies(algorithm_node pioneer_mrs_generate_messages pioneer_mrs_gencfg)
-add_dependencies(trajectory_node pioneer_mrs_generate_messages)
 add_dependencies(comm_state_cmd pioneer_mrs_generate_messages)
 
 ## Specify libraries to link a library or executable target against
@@ -172,13 +164,7 @@ add_dependencies(comm_state_cmd pioneer_mrs_generate_messages)
 target_link_libraries(algorithm_node
    ${catkin_LIBRARIES}
 )
-target_link_libraries(handpoint_node
-   ${catkin_LIBRARIES}
-)
-target_link_libraries(trajectory_node
-   ${catkin_LIBRARIES}
-)
-target_link_libraries(trajectory_cmd
+target_link_libraries(pioneer_server
    ${catkin_LIBRARIES}
 )
 target_link_libraries(comm_state_cmd

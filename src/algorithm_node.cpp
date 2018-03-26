@@ -1,30 +1,35 @@
-#include <pioneer_mrs/pioneer.h>
+#include <ros/ros.h> 
 #include <pioneer_mrs/CommunicationState.h>
 #include <pioneer_mrs/MissionState.h>
 #include <pioneer_mrs/Point2D.h>
 #include <pioneer_mrs/Pose2D.h>
 #include <geometry_msgs/Vector3.h>
+
 #include <dynamic_reconfigure/server.h>
 #include <pioneer_mrs/FormationConfig.h>
 
-class Algorithm : public Pioneer
+class Algorithm
 {
   public:
     Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private);
     ~Algorithm();
 
   public:
-    void computeVelocity(double);
     void missionStateCallBack(const pioneer_mrs::MissionState &);
     void communicationStateCallBack(const pioneer_mrs::CommunicationState &);
     void dynamicReconfigureCallBack(pioneer_mrs::FormationConfig &, uint32_t);
+
+  public:
     void updateNeighborPose();
+    void computeVelocity(double);
   
   protected:
     Point2D sign(Point2D);
     Point2D gradient(Point2D);
     
   protected:
+    int HOSTNUM;  // array index
+    std::string HOSTNAME;
     double Q;
     double FORMATION_OFFSET;
     Point2D pose_i;
@@ -47,11 +52,16 @@ class Algorithm : public Pioneer
 
 
 Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
-  Pioneer(nh, nh_private),
+  HOSTNUM(0),
+  HOSTNAME(""),
   Q(0.2),
   STATE(false),
   FORMATION_OFFSET(0)
 {
+  // HOSTNAME & HOSTNUM
+  nh_private.param( "hostname", HOSTNAME, std::string("robot1") );
+  HOSTNUM = std::stoi( HOSTNAME.substr(5) ) - 1;
+
   pose_offset[0].x = -1;
   pose_offset[0].y = 1;
 
@@ -72,13 +82,10 @@ Algorithm::Algorithm(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
 
   for(int i=0;i<=4;i++)
   {
-    if(i != HOSTNUM)
-    {
-      get_pose[i] = nh.serviceClient<pioneer_mrs::Pose2D>("/robot" + std::to_string(i+1) + "/get_pose", true); 
-      // second argument is true ==> set persistent connections to TCP
-      ROS_INFO_STREAM(HOSTNAME + " get pose from: robot"<<i+1);
-    }
-  }   
+    get_pose[i] = nh.serviceClient<pioneer_mrs::Pose2D>("/robot" + std::to_string(i+1) + "/get_pose", true); 
+    // second argument is true ==> set persistent connections to TCP
+    ROS_INFO_STREAM(HOSTNAME + " get pose from: robot"<<i+1);
+  }
   vel_hp_pub = nh.advertise<geometry_msgs::Vector3>("cmd_vel_hp", 1);
 
   dynamic_reconfigure_server = new dynamic_reconfigure::Server<pioneer_mrs::FormationConfig>;
@@ -201,8 +208,7 @@ void Algorithm::updateNeighborPose()
   pioneer_mrs::Pose2D srv[5];
   for(int i=0;i<=4;i++)
   {
-    if(i != HOSTNUM)
-      get_pose[i].call(srv[i]);
+    get_pose[i].call(srv[i]);
   }
   for(int i=0;i<=4;i++)
   {
@@ -210,14 +216,12 @@ void Algorithm::updateNeighborPose()
     {
       pose_j[i].x = srv[i].response.x;
       pose_j[i].y = srv[i].response.y;
-
     }
   }
   ROS_DEBUG_STREAM(HOSTNAME + " algorithm_node: Updated neighbor pose.");
   
   // update my pose
-  pose_i.x = pose_hp.x;
-  pose_i.y = pose_hp.y;
+  pose_i = pose_j[HOSTNUM];
 }
 
 

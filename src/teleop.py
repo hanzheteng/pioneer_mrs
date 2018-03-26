@@ -14,7 +14,6 @@ Press 9 to select all and 0 to select none.
 For selected robots:
     Press 'arrow keys' to move the robot.
     Press 'space bar' to stop the robot.
-    Press 't' to start a trajectory mission.
     Press 'm' to start a multi-robot algorithm mission.
     Press 'u' to move the team forward.
     Press 'd' to move the team backward.
@@ -27,8 +26,8 @@ robotSwitch = [False, False, False, False, False]
 # up, down, right, left, stop
 movementList = {'\x1b[A':(1,0), '\x1b[B':(-1,0), '\x1b[C':(0,-1), '\x1b[D':(0,1), ' ':(0,0)}
 
-# trajectory, multi-robot algorithm, stop
-missionList = ('t', 'm', 's', 'u', 'd')
+# multi-robot algorithm, stop, forward(up), backward(down)
+missionList = ('m', 's', 'u', 'd')
 
 
 def getKey():
@@ -89,10 +88,7 @@ def teleoperation():
 
         elif key in missionList:
             cmd = MissionState()  # default False
-            if key == 't':
-                cmd.trajectory = True
-                rospy.loginfo("start a trajectory mission")
-            elif key == 'm':
+            if key == 'm':
                 cmd.algorithm = True
                 cmd.formation_offset = formation_offset
                 rospy.loginfo("start a multi-robot algorithm mission")
