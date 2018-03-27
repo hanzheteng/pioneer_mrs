@@ -136,9 +136,6 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/pioneer_mrs_node.cpp)
-add_executable(algorithm_node
-  src/algorithm_node.cpp
-)
 add_executable(pioneer_server
   src/pioneer_server.cpp
 )
@@ -154,16 +151,12 @@ add_executable(comm_state_cmd
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(pioneer_server pioneer_mrs_generate_messages pioneer_mrs_gencfg)
-add_dependencies(algorithm_node pioneer_mrs_generate_messages pioneer_mrs_gencfg)
 add_dependencies(comm_state_cmd pioneer_mrs_generate_messages)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(algorithm_node
-   ${catkin_LIBRARIES}
-)
 target_link_libraries(pioneer_server
    ${catkin_LIBRARIES}
 )

@@ -281,3 +281,4 @@ Most of the time, you can use `roswtf` command to diagnose your problem.
 2. If prompt `process has died, exit code -11`, you may access data in the code which was not initialized.
 3. If prompt `The following roslaunch remote processes failed to register: * xxxx (timeout 10.0s)`, your network may have a problem, including hosts file, ROS_MASTER_URI, env loader, etc. (e.g. the hostname of your laptop was not exactly the same as you set in /etc/hosts file)
 4. Launch sequence problem: Due to the client-server RPC mechanism of 'Pose2D' service, the server node 'handpoint_node' must launch earlier than other client nodes, otherwise the connection would not be established in the initialization.
+5. If prompt `cannot launch node of type [some python file]`, you need to add execute permission to that python file.

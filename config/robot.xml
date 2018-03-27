@@ -2,7 +2,7 @@
 	<arg name="hostname" default="robot1"/>
 	<arg name="machine" default="commander"/>
 
-	<node name="algorithm_node" pkg="pioneer_mrs" type="algorithm_node" output="screen" machine="$(arg machine)">
+	<node name="algorithm_node" pkg="pioneer_mrs" type="algorithm.py" output="screen" machine="$(arg machine)">
 	    <param name="hostname" type="string" value="$(arg hostname)"/>
 		</node>
 </launch>
