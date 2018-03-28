@@ -57,7 +57,7 @@ def teleoperation():
     pub_cmd_5 = rospy.Publisher('/robot5/mission_state', MissionState, queue_size=1)
     pub_cmd = [pub_cmd_1, pub_cmd_2, pub_cmd_3, pub_cmd_4, pub_cmd_5]
 
-    formation_offset = 0
+    moving_distance = 0
 
     print welcomeMessage
 
@@ -90,18 +90,18 @@ def teleoperation():
             cmd = MissionState()  # default False
             if key == 'm':
                 cmd.algorithm = True
-                cmd.formation_offset = formation_offset
+                cmd.moving_distance = moving_distance
                 rospy.loginfo("start a multi-robot algorithm mission")
             elif key == 'u':
                 cmd.algorithm = True
-                formation_offset += 0.1
-                cmd.formation_offset = formation_offset
-                rospy.loginfo("formation_offset = " + str(formation_offset))
+                moving_distance += 0.1
+                cmd.moving_distance = moving_distance
+                rospy.loginfo("moving_distance = " + str(moving_distance))
             elif key == 'd':
                 cmd.algorithm = True
-                formation_offset -= 0.1
-                cmd.formation_offset = formation_offset
-                rospy.loginfo("formation_offset = " + str(formation_offset))
+                moving_distance -= 0.1
+                cmd.moving_distance = moving_distance
+                rospy.loginfo("moving_distance = " + str(moving_distance))
             else:
                 rospy.loginfo("stop the mission") 
             for i in range(5):

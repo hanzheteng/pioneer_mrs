@@ -1,3 +1,3 @@
 # This is a list of mission status upon mission commander. 
 bool algorithm
-float32 formation_offset
+float32 moving_distance
