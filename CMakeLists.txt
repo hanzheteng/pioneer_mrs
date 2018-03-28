@@ -9,7 +9,6 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  message_generation
   roscpp
   rospy
   std_msgs
@@ -17,6 +16,8 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   tf
   dynamic_reconfigure
+  message_generation
+  actionlib_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -55,8 +56,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(FILES
   CommunicationState.msg
-  MissionState.msg
-)
+  )
 
 ## Generate services in the 'srv' folder
 add_service_files(FILES
@@ -64,15 +64,14 @@ add_service_files(FILES
 )
 
 ## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
-#   Action2.action
-# )
+add_action_files(FILES
+  Formation.action
+)
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(DEPENDENCIES
   std_msgs
+  actionlib_msgs
 )
 
 ################################################
@@ -106,6 +105,7 @@ generate_dynamic_reconfigure_options(
 catkin_package(
   CATKIN_DEPENDS
   message_runtime
+  actionlib_msgs
 #  INCLUDE_DIRS include
 #  LIBRARIES pioneer_mrs
 #  CATKIN_DEPENDS roscpp rospy std_msgs

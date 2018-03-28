@@ -56,9 +56,8 @@ Pioneer::Pioneer(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   POSE(""),
   HANDPOINT_OFFSET(0)
 {
-  // HOSTNAME 
+  // HOSTNAME
   nh_private.param( "hostname", HOSTNAME, std::string("robot1") );
-  ROS_INFO( "[%s]: node launched.", HOSTNAME.c_str() );
 
   // HOSTNUM
   HOSTNUM = std::stoi( HOSTNAME.substr(5) ) - 1; // array index
@@ -66,7 +65,7 @@ Pioneer::Pioneer(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   // POSE mode
   nh_private.param( "pose", POSE, std::string("odom") );
   if(POSE != "odom")
-    ROS_INFO_STREAM( "[" << HOSTNAME << "]: set pose = " << POSE << " (localization by " << POSE << ")");
+    ROS_INFO_STREAM( HOSTNAME + " set pose = " << POSE << " (localization by " << POSE << ")");
   if(POSE == "vicon")
     vicon_pose_sub = nh.subscribe("/vicon/" + HOSTNAME + "/" + HOSTNAME, 1, &Pioneer::viconPoseCallBack, this);
   else if(POSE == "gazebo")
@@ -77,7 +76,7 @@ Pioneer::Pioneer(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   // handpoint offset
   nh_private.param( "handpoint_offset", HANDPOINT_OFFSET, 0.25);
   if(HANDPOINT_OFFSET != 0.25)
-    ROS_INFO_STREAM( "[" << HOSTNAME << "]: set handpoint offset = " << HANDPOINT_OFFSET);
+    ROS_INFO_STREAM( HOSTNAME + " set handpoint offset = " << HANDPOINT_OFFSET);
 
   // handpoint velocity callback
   vel_hp_sub = nh.subscribe("cmd_vel_hp", 1, &Pioneer::handpointVelocityCallBack, this);
@@ -85,6 +84,9 @@ Pioneer::Pioneer(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
 
   // pose server
   pose_server = nh.advertiseService("get_pose", &Pioneer::poseServiceCallBack, this);
+
+  // done
+  ROS_INFO_STREAM( HOSTNAME + " pioneer_server launched." );
 }
 
 

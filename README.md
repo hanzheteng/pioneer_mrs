@@ -276,3 +276,5 @@ Most of the time, you can use `roswtf` command to diagnose your problem.
 3. If prompt `The following roslaunch remote processes failed to register: * xxxx (timeout 10.0s)`, your network may have a problem, including hosts file, ROS_MASTER_URI, env loader, etc. (e.g. the hostname of your laptop was not exactly the same as you set in /etc/hosts file)
 4. Launch sequence problem: service servers need to start earlier than clients. (C++ only, python solved this problem by `wait_for_service` function)
 5. If prompt `cannot launch node of type [some python file]`, you need to add execute permission to that python file.
+6. Getting input and printing output in the same command line window will result in a kind of shfiting of output lines.
+

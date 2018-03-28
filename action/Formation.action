@@ -1,0 +1,12 @@
+# Define the goal
+uint32 order
+---
+# Define the result
+string name
+float32 x
+float32 y
+---
+# Define a feedback message
+string name
+float32 x
+float32 y

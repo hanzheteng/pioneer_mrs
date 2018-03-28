@@ -9,13 +9,13 @@
 		</node>
 	
 	<node name="pioneer_server" pkg="pioneer_mrs" type="pioneer_server" output="screen" machine="$(arg machine)">
-	    <param name="hostname" type="string" value="$(arg hostname)"/>
+		<param name="hostname" type="string" value="$(arg hostname)"/>
 		<param name="pose" type="string" value="$(arg pose)"/>
 		<!-- remap cmd_vel topic to gazebo namespace-->
 		<remap from="RosAria/cmd_vel" to="gazebo/cmd_vel" if="$(eval arg('pose') == 'gazebo')" />
 		</node>
 
 	<node name="algorithm_node" pkg="pioneer_mrs" type="algorithm.py" output="screen" machine="$(arg machine)">
-	    <param name="hostname" type="string" value="$(arg hostname)"/>
+		<param name="hostname" type="string" value="$(arg hostname)"/>
 		</node>
 </launch>
