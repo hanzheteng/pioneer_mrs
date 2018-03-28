@@ -9,6 +9,8 @@
 	<include file="$(find pioneer_mrs)/config/robot.xml" ns="$(arg hostname)">
 		<arg name="hostname" value="$(arg hostname)" />
 		<arg name="machine" value="$(arg hostname)" if="$(eval arg('machine') == 'remote')"/>
+		<arg name="pose" value="$(arg pose)" />
+		<arg name="port" value="$(eval 'localhost:810' + arg('hostname')[-1])" if="$(eval arg('machine') == 'mobilesim')"/>
 		</include>
 
 </launch>

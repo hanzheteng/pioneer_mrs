@@ -57,11 +57,9 @@ Optional package:
 
 #### Sample Usage
 Basically there are several steps:
-1. launch server nodes on all five robots </br>
-`roslaunch pioneer_mrs multi-robot-server.launch`
-2. launch client nodes on all five robots </br>
+1. launch nodes on all five robots </br>
 `roslaunch pioneer_mrs multi-robot.launch`
-3. launch nodes on commander </br>
+2. launch nodes on commander </br>
 `roslaunch pioneer_mrs commander.launch`
 
 If using Vicon:
@@ -76,11 +74,9 @@ You also need [ROSARIA](https://github.com/amor-ros-pkg/rosaria) package to conn
 Basically there are several steps:
 1. run a MobileSim simulator and spawn five robots </br>
 `roslaunch pioneer_mrs mobilesim.launch`
-2. launch server nodes on all five robots </br>
-`roslaunch pioneer_mrs multi-robot-server.launch machine:=mobilesim`
-3. launch client nodes on all five robots </br>
+2. launch nodes on all five robots </br>
 `roslaunch pioneer_mrs multi-robot.launch machine:=mobilesim`
-4. launch nodes on commander </br>
+3. launch nodes on commander </br>
 `roslaunch pioneer_mrs commander.launch`
 
 ### 2.3 Running on Gazebo Simulator
@@ -89,11 +85,9 @@ You do not need ROSARIA package here, since Gazebo will take charge of publishin
 Basically there are several steps:
 1. run a Gazebo simulator and spawn five robots </br>
 `roslaunch pioneer_mrs gazebo.launch`
-2. launch server nodes on all five robots </br>
-`roslaunch pioneer_mrs multi-robot-server.launch pose:=gazebo machine:=gazebo`
-3. launch client nodes on all five robots </br>
+2. launch nodes on all five robots </br>
 `roslaunch pioneer_mrs multi-robot.launch pose:=gazebo machine:=gazebo`
-4. launch nodes on commander </br>
+3. launch nodes on commander </br>
 `roslaunch pioneer_mrs commander.launch`
 
 Notice: On real robots, movement commands only execute for 600ms because of WatchDog timeout mechanism; but in gazebo simulator, robots will keep moving towards the last direction. You may press space bar (stop command) to stop it.
@@ -280,5 +274,5 @@ Most of the time, you can use `roswtf` command to diagnose your problem.
 1. If `roslaunch` or `rosrun` cannot autocomplete by `Tab` key, first check if your search path covers the package by `env | grep ROS`. If it already exist in the path, try `rospack profile` or reboot your system.
 2. If prompt `process has died, exit code -11`, you may access data in the code which was not initialized.
 3. If prompt `The following roslaunch remote processes failed to register: * xxxx (timeout 10.0s)`, your network may have a problem, including hosts file, ROS_MASTER_URI, env loader, etc. (e.g. the hostname of your laptop was not exactly the same as you set in /etc/hosts file)
-4. Launch sequence problem: Due to the client-server RPC mechanism of 'Pose2D' service, the server node 'handpoint_node' must launch earlier than other client nodes, otherwise the connection would not be established in the initialization.
+4. Launch sequence problem: service servers need to start earlier than clients. (C++ only, python solved this problem by `wait_for_service` function)
 5. If prompt `cannot launch node of type [some python file]`, you need to add execute permission to that python file.
