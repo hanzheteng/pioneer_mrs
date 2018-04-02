@@ -7,6 +7,8 @@
 #include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/Pose2D.h> //msg
 #include <pioneer_mrs/Pose2D.h>  //srv
+#include <dynamic_reconfigure/server.h>
+#include <pioneer_mrs/PioneerConfig.h>
 
 class Pioneer
 {
@@ -14,6 +16,7 @@ class Pioneer
     Pioneer(ros::NodeHandle& nh, ros::NodeHandle& nh_private);
     virtual ~Pioneer();
 
+  /* role one: provide pose information */
   public:
     void odomPoseCallBack(const nav_msgs::Odometry &);
     void gazeboPoseCallBack(const nav_msgs::Odometry &);
@@ -21,11 +24,10 @@ class Pioneer
     bool poseServiceCallBack(pioneer_mrs::Pose2DRequest &, pioneer_mrs::Pose2DResponse &);
 
   protected:
-    // parameters
+    // pose parameters
     int HOSTNUM;  // array index
     std::string HOSTNAME;
     std::string POSE;
-    double HANDPOINT_OFFSET;  // metric: 10in = 0.25m
 
     // pose info, theta from -3.14 to 3.14, left side is positive
     geometry_msgs::Pose2D pose_hp; // handpoint pose
@@ -37,10 +39,17 @@ class Pioneer
     // pose server
     ros::ServiceServer pose_server;
 
+  /* role two: convert vel_hp to vel (of center point) */
   public:
+    void handpointOffsetReconfigureCallBack(pioneer_mrs::PioneerConfig &, uint32_t);
     void handpointVelocityCallBack(const geometry_msgs::Vector3 &);
 
   protected:
+    // handpoint parameter
+    double HANDPOINT_OFFSET;  // metric: 10in = 0.25m
+    // reconfigure server
+    dynamic_reconfigure::Server<pioneer_mrs::PioneerConfig> *cfg_server;
+
     // subscribe handpoint velocity
     ros::Subscriber vel_hp_sub;
     geometry_msgs::Vector3 vel_hp;   // x, y  (hand point)
@@ -78,6 +87,10 @@ Pioneer::Pioneer(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
   if(HANDPOINT_OFFSET != 0.25)
     ROS_INFO_STREAM( HOSTNAME + " set handpoint offset = " << HANDPOINT_OFFSET);
 
+  // handpoint offset reconfigure server
+  cfg_server = new dynamic_reconfigure::Server<pioneer_mrs::PioneerConfig>;
+  cfg_server->setCallback(boost::bind(&Pioneer::handpointOffsetReconfigureCallBack, this, _1, _2));
+
   // handpoint velocity callback
   vel_hp_sub = nh.subscribe("cmd_vel_hp", 1, &Pioneer::handpointVelocityCallBack, this);
   vel_pub = nh.advertise<geometry_msgs::Twist>("RosAria/cmd_vel", 1);
@@ -92,6 +105,8 @@ Pioneer::Pioneer(ros::NodeHandle& nh, ros::NodeHandle& nh_private):
 
 Pioneer::~Pioneer()
 {
+  delete cfg_server;
+  cfg_server = NULL;
   ROS_INFO_STREAM("[" << HOSTNAME << "]: Quitting... \n");
 }
 
@@ -157,6 +172,18 @@ bool Pioneer::poseServiceCallBack(pioneer_mrs::Pose2DRequest &rqt, pioneer_mrs::
   res.y = this->pose_hp.y;
   res.success = true;
   return true;
+}
+
+
+void Pioneer::handpointOffsetReconfigureCallBack(pioneer_mrs::PioneerConfig &config, uint32_t level)
+{
+  double value;
+  value = config.handpoint_offset;
+  if(value != this->HANDPOINT_OFFSET && value > 0)
+  {
+    ROS_INFO_STREAM(HOSTNAME + " Set HANDPOINT_OFFSET = "<<value<<" m");
+    this->HANDPOINT_OFFSET = value;
+  }
 }
 
 
