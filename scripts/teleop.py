@@ -2,6 +2,8 @@
 import sys
 import termios
 import tty
+import commands
+import subprocess as sp
 import time
 import rospy
 import actionlib
@@ -28,6 +30,8 @@ movementList = {'\x1b[A':(1,0), '\x1b[B':(-1,0), '\x1b[C':(0,-1), '\x1b[D':(0,1)
 
 # multi-robot algorithm, stop action
 missionList = ('m', 's')
+
+robotPosition = [0, [0,0], [0,0], [0,0], [0,0], [0,0]]
 
 
 def getKey():
@@ -63,6 +67,18 @@ def teleoperation():
 
     print welcomeMessage
 
+    # redirect screen output to an xterm terminal
+    old_tty = commands.getoutput("ls /dev/pts").split('\n')
+    xterm = sp.Popen(["xterm"])
+    time.sleep(1)
+    new_tty = commands.getoutput("ls /dev/pts").split('\n')
+    num = list(set(new_tty).difference(set(old_tty)))[0]
+    old_stdout = sys.stdout
+    fd = open("/dev/pts/"+str(num), 'w')
+    sys.stdout = fd
+    print "\n"
+
+    # main loop
     while not rospy.is_shutdown():
         key = getKey()
         if key == '\x1b':
@@ -93,26 +109,51 @@ def teleoperation():
                 for i in range(5):
                     client[i].send_goal(goal, feedback_cb=action_feedback_cb, done_cb=action_done_cb)
                 rospy.loginfo("start a multi-robot algorithm action")
-                for i in range(5):
-                    client[i].wait_for_result()
-                time.sleep(1)
-                print welcomeMessage
+                #for i in range(5):
+                #    client[i].wait_for_result()
+                #time.sleep(1)
+                #print welcomeMessage
             else:
                 for i in range(5):
                     client[i].cancel_all_goals()
                 rospy.loginfo("stop the action")
-                time.sleep(1)
-                print welcomeMessage
+                #time.sleep(1)
+                #print welcomeMessage
 
         elif key == '\x03':
             break
+    
+    # restore stdout
+    xterm.kill()
+    sys.stdout = old_stdout
+    fd.close()
 
 
 def action_feedback_cb(feedback):
-    rospy.loginfo(feedback.name + " (%.5f,%.5f) ", feedback.x, feedback.y)
+    index = int(feedback.name[-1])
+    robotPosition[index][0] = feedback.x
+    robotPosition[index][1] = feedback.y
+    robotPosition[0] += 1
+    if robotPosition[0] == 5:
+        robotPosition[0] = 0
+        for i in range(1,6):
+            rospy.loginfo("robot" + str(i) + " (% .4f,% .4f) ", robotPosition[i][0], robotPosition[i][1])
+        rospy.loginfo("--------------------------------")
 
+    
 def action_done_cb(success, result):
-    rospy.loginfo(result.name + " result (%.5f,%.5f) ", result.x, result.y)
+    if(success==3):
+        index = int(result.name[-1])
+        robotPosition[index][0] = result.x
+        robotPosition[index][1] = result.y
+        robotPosition[0] += 1
+        if robotPosition[0] == 5:
+            robotPosition[0] = 0
+            for i in range(1,6):
+                rospy.loginfo("robot" + str(i) + " (% .4f,% .4f) ", robotPosition[i][0], robotPosition[i][1])
+            rospy.loginfo("action succeeded")
+    else:
+        rospy.loginfo("action failed")
 
 
 if __name__ == "__main__":

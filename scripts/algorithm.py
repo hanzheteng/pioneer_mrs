@@ -64,9 +64,9 @@ class Algorithm:
 
         # run action for goal.order steps
         rate = rospy.Rate(10)
-        for i in range(1, goal.order):
+        for step in range(1, goal.order):
             # send feedback and check preempt every second
-            if goal.order % 10 == 0:
+            if step % 10 == 0:
                 self._feedback.name = self._hostname
                 self._feedback.x = self._my_pose[0]
                 self._feedback.y = self._my_pose[1]
@@ -119,21 +119,21 @@ class Algorithm:
                 vel = (team_pose_with_offset[i] - my_pose_with_offset) * self._gain_q
                 vel_sum = vel_sum + vel
                 rospy.loginfo(self._hostname + " algorithm_node: robot" + str(i+1) + \
-                    " pose (x=%.5f,y=%.5f)", self._team_pose[i][0], self._team_pose[i][1])
+                    " pose (% .4f,% .4f)", self._team_pose[i][0], self._team_pose[i][1])
                 rospy.loginfo(self._hostname + " algorithm_node: vel" + str(i+1) + \
-                    " (Vx=%.5f,Vy=%.5f)", vel[0], vel[1])
+                    " (% .4f,% .4f)", vel[0], vel[1])
 
         # gradient descent makes the consensus point stick to the optimal point
         gradient = my_pose_with_offset - self._gradient[self._hostnum]
         vel_sum = vel_sum - (gradient - moving_distance)
-        rospy.loginfo(self._hostname + " algorithm_node: gradient (x=%.5f,y=%.5f)", gradient[0], gradient[1])
+        rospy.loginfo(self._hostname + " algorithm_node: gradient (% .4f,% .4f)", gradient[0], gradient[1])
 
         # publish velocity result (vel of hand point)
         vel_hp = Vector3()
         vel_hp.x = vel_sum[0]
         vel_hp.y = vel_sum[1]
         self.vel_hp_pub.publish(vel_hp)
-        rospy.loginfo(self._hostname + " algorithm_node: pub vel_hp (x=%.5f,y=%.5f)", vel_hp.x, vel_hp.y)
+        rospy.loginfo(self._hostname + " algorithm_node: pub vel_hp (% .4f,% .4f)", vel_hp.x, vel_hp.y)
 
 
 if __name__ == '__main__':
