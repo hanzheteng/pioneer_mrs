@@ -1,30 +1,29 @@
 # pioneer_mrs
 ## 1. Introduction
-ROS package for Pioneer 3-AT Multi-Robot Systems.
+A ROS package for Pioneer 3-AT Multi-Robot Systems. 
+
+This is a flexible experimental platform for multi-robot systems (MRS). Should there be any problem, please feel free to contact maintainer [@hanzheteng](https://github.com/hanzheteng) or open a new issue in this repository.
 
 <table>
   <tr>
     <th> ROS package </th>
-    <th> Description (<I>Capabilities</I>) </th>
+    <th> Description (<I>Features</I>) </th>
     <th> Platform </th>
-    <th> Maintainer </th>
   </tr>
   <tr>
     <td> <a href="https://github.com/hanzheteng/pioneer_mrs">
       pioneer_mrs </a> </td>
     <td> <ul>
-      <li> Control by linear velocity of the handpoint of robots (a linear system, see <a href="https://photos.app.goo.gl/RM9N5i3zI2EHCJNo1">demo</a>) </li>
-      <li> Task 1: multi-robot trajectory tracking (circular shape, <a href="https://photos.app.goo.gl/eyeclA9uSp1WvkLr2">demo</a>) </li>
-      <li> Task 2: distributed multi-robot formation control </li>
-      <li> Support both MobileSim and Gazebo simulators </li>
-      <li> Localization done by either simulators, odometry, or VICON motion capture system </li> </ul> </td>
+      <li> Support scientific computing library (numpy, scipy, etc.) for your algorithms </li>
+      <li> Support two kinds of localization methods (odometry, VICON) </li>
+      <li> Support two kinds of robot-level simulators (MobileSim, Gazebo) </li>
+      <li> Visualization is under developing </li> </ul> </td>
     <td> <ul>
       <li> <a href="http://robots.ros.org/pioneer-3-at/"> Pioneer 3-AT </a> </li>
       <li> Ubuntu 16.04.3 LTS </li>
       <li> <a href="http://www.ros.org/about-ros/"> Robot Operating System </a> (kinetic) </li>
       <li> <a href="http://wiki.ros.org/ROSARIA"> ROSARIA </a>  package (git-commit-aa8d5f7) </li>
       <li> <a href="http://robots.mobilerobots.com/wiki/ARIA"> ARIA </a> lib (2.9.1a-ubuntu16-i386) </li> </ul> </td>
-    <td> <a href="https://github.com/hanzheteng"> @hanzheteng </a> </td>
   </tr>
 </table>
 
@@ -124,56 +123,39 @@ Note: `robot#` represents any robot label from 1 to 5.
     <td> /robot#/RosAria
       <br> (<a href="http://wiki.ros.org/ROSARIA">rosaria</a> package) </td>
     <td> /robot#/RosAria/cmd_vel </td>
-    <td> /robot#/RosAria/pose
-      <br> /robot#/RosAria/... </td>
-    <td> receive velocity commands and execute </td>
+    <td> /robot#/RosAria/pose </td>
+    <td> SDK bridge to communicate with microcontrollers </td>
   </tr>
   <tr>
-    <td> /robot#/handpoint_node </td>
+    <td> /robot#/pioneer_server </td>
     <td> /robot#/cmd_vel_hp
       <br> /robot#/RosAria/pose
+      <br> /robot#/gazebo/odom
       <br> /vicon/robot#/robot# </td>
     <td> /robot#/RosAria/cmd_vel
       <br> /robot#/get_pose </td>
-    <td> translate hand-point commands </td>
-  </tr>
-  <tr>
-    <td> /robot#/trajectory_node </td>
-    <td> /robot#/mission_state
-      <br> /robot#/trajectory
-      <br> /robot#/RosAria/pose
-      <br> /vicon/robot#/robot# </td>
-    <td> /robot#/cmd_vel_hp </td>
-    <td> receive trajectory commands and execute </td>
+    <td> pose server for pioneer robots </td>
   </tr>
   <tr>
     <td> /robot#/algorithm_node </td>
-    <td> /robot#/mission_state
-      <br> /robot#/comm_state
-      <br> /robot#/RosAria/pose
-      <br> /vicon/robot#/robot#
+    <td> /robot#/comm_state
       <br> /robot#/get_pose </td>
-    <td> /robot#/cmd_vel_hp </td>
-    <td> execute designed algorithm </td>
+    <td> /robot#/cmd_vel_hp
+      <br> /robot#/Formation </td>
+    <td> execute pre-designed algorithm </td>
   </tr>
   <tr>
     <td> /commander/teleop </td>
-    <td> --- </td>
+    <td> /robot#/Formation </td>
     <td> /robot#/mission_state
       <br> /robot#/cmd_vel_hp </td>
     <td> commander & teleoperation node </td>
   </tr>
   <tr>
-    <td> /commander/trajectory_cmd </td>
-    <td> --- </td>
-    <td> /robot#/trajectory </td>
-    <td> send designed trajectory info </td>
-  </tr>
-  <tr>
     <td> /commander/comm_state_cmd </td>
     <td> --- </td>
     <td> /robot#/comm_state </td>
-    <td> create a communication graph between robots </td>
+    <td> publish communication graph info </td>
   </tr>
 </table>
 
@@ -218,23 +200,6 @@ Note: `robot#` represents any robot label from 1 to 5.
     <td> only use 2D velocity (z=0) </td>
   </tr>
   <tr>
-    <td> /robot#/trajectory </td>
-    <td> float64[] positions
-      <br> float64[] velocities
-      <br> float64[] accelerations
-      <br> float64[] effort
-      <br> duration time_from_start </td>
-    <td> <a href="http://docs.ros.org/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html"> JointTrajectoryPoint.msg </a> </td>
-    <td> see wiki </td>
-  </tr>
-  <tr>
-    <td> /robot#/mission_state  </td>
-    <td> bool trajectory
-      <br> bool algorithm </td>
-    <td> MissionState.msg </td>
-    <td> set mission start or stop </td>
-  </tr>
-  <tr>
     <td> /robot#/comm_state </td>
     <td> bool[5] state </td>
     <td> CommunicationState.msg </td>
@@ -262,12 +227,39 @@ Note: `robot#` represents any robot label from 1 to 5.
   </tr>
 </table>
 
+
+### 3.4 Action Definition
+<table>
+  <tr>
+    <th> Graph Resource Name </th>
+    <th> Format </th>
+    <th> Action File Name </th>
+    <th> Description </th>
+  </tr>
+  <tr>
+    <td> /robot#/Formation </td>
+    <td> uint32 order
+      <br> ---
+      <br> string name
+      <br> float32 x
+      <br> float32 y
+      <br> ---
+      <br> string name
+      <br> float32 x
+      <br> float32 y </td>
+    <td> Formation.action </td>
+    <td> set a goal of total steps 
+      <br> get feedbacks of positions in each step </td>
+  </tr>
+</table>
+
 ## 4. Update Log
 - V1.0 (Jan 4, 2018) Basic multi-robot control framework
 - V1.1 (Jan 15, 2018) The MRS control framework works well with new features, but the algorithm node need to be updated.
 - V1.1.4 (Feb 5, 2018) The algorithm node works well on both MobileSim simulator and empirical experiments. The Gazebo simulator still has problems to be resolved.
 - V1.2 (Feb 18, 2018) The multi-robot system works well on MobileSim simulator, Gazebo simulator and empirical experiments (localization done by either odometry, Vicon system, or Gazebo simulator.)
 - V1.3 (Mar 17, 2018) Add offset adjestment to the existing formation based on optimal-point algorithm; Launch files may have some problems because of improper launch sequence. (Senior Design project done in this version)
+- V1.4 (Apr 4, 2018) Make this framework more concise and efficient. (Rewrite communication mechanism by client-server RPC; rewrite algorithm node by python and support scientific computing library; apply actionlib for desired missions; add dynamic reconfigure)
 
 ## 5. Debug FAQ
 Most of the time, you can use `roswtf` command to diagnose your problem.
