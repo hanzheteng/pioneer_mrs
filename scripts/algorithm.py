@@ -116,7 +116,7 @@ class Algorithm:
         for i in range(5):
             # check communication graph and the correctness of pose data
             if self._comm_state[i] and self._team_pose[i].any() != 0:
-                vel = (team_pose_with_offset[i] - my_pose_with_offset) * self._gain_q
+                vel = (team_pose_with_offset[i] - my_pose_with_offset)
                 vel_sum = vel_sum + vel
                 rospy.loginfo(self._hostname + " algorithm_node: robot" + str(i+1) + \
                     " pose (% .4f,% .4f)", self._team_pose[i][0], self._team_pose[i][1])
@@ -125,8 +125,12 @@ class Algorithm:
 
         # gradient descent makes the consensus point stick to the optimal point
         gradient = my_pose_with_offset - self._gradient[self._hostnum]
-        vel_sum = vel_sum - (gradient - moving_distance)
+        vel_sum = vel_sum - (gradient - moving_distance) / np.sqrt(self._gain_q)
         rospy.loginfo(self._hostname + " algorithm_node: gradient (% .4f,% .4f)", gradient[0], gradient[1])
+
+        # update gain q
+        self._gain_q = self._gain_q + np.arctan(np.exp(np.linalg.norm( my_pose_with_offset )))
+        rospy.loginfo(self._hostname + " algorithm_node: gain q = %.2f ", self._gain_q)
 
         # publish velocity result (vel of hand point)
         vel_hp = Vector3()
