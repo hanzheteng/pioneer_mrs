@@ -89,7 +89,12 @@ For selected robots:
         client_4 = actionlib.SimpleActionClient('/robot4/Formation', pioneer_mrs.msg.FormationAction)
         client_5 = actionlib.SimpleActionClient('/robot5/Formation', pioneer_mrs.msg.FormationAction)
         client = (client_1, client_2, client_3, client_4, client_5)
+
         goal = pioneer_mrs.msg.FormationGoal(order=100)
+
+        self.plot_x = rospy.Publisher('plot/x', PointArray, queue_size=10)
+        self.plot_y = rospy.Publisher('plot/y', PointArray, queue_size=10)
+        
         for i in range(5):
             client[i].wait_for_server()
 
@@ -100,7 +105,7 @@ For selected robots:
         # main loop
         while not rospy.is_shutdown():
             key = self.get_key()
-            if key == '\x1b':
+            if key == '\x1b':   # arrow key has three char
                 key += self.get_key()
                 key += self.get_key()
 
@@ -117,7 +122,7 @@ For selected robots:
 
             elif key in self._movement_list:
                 vel = Vector3()  # default zero
-                vel.x = self._movement_list[key][0] * 0.4
+                vel.x = self._movement_list[key][0] * 0.4   # set vel to 0.4 m/s
                 vel.y = self._movement_list[key][1] * 0.4
                 for i in range(5):
                     if self._robot_switch[i]:
@@ -151,22 +156,29 @@ For selected robots:
         self._robot_position[index][0] = feedback.x
         self._robot_position[index][1] = feedback.y
         self._robot_position[0] += 1
-        if self._robot_position[0] == 5:
-            self._robot_position[0] = 0
+        if self._robot_position[0] == 5:   # wait for msgs from all five robots
+            self._robot_position[0] = 0    # and log them in order
             for i in range(1,6):
                 rospy.loginfo("robot" + str(i) + " (% .4f,% .4f) ", \
                 self._robot_position[i][0], self._robot_position[i][1])
             rospy.loginfo("--------------------------------")
+            position_x = PointArray()
+            position_y = PointArray()
+            for i in range(1,6):
+                position_x.point.append(self._robot_position[i][0])
+                position_y.point.append(self._robot_position[i][1])
+            self.plot_x.publish(position_x)
+            self.plot_y.publish(position_y)
 
     
     def action_done_cb(self, success, result):
-        if(success==3):
+        if(success==3):   # no idea why this flag has to be 3 when success
             index = int(result.name[-1])
             self._robot_position[index][0] = result.x
             self._robot_position[index][1] = result.y
             self._robot_position[0] += 1
-            if self._robot_position[0] == 5:
-                self._robot_position[0] = 0
+            if self._robot_position[0] == 5:   # wait for msgs from all five robots
+                self._robot_position[0] = 0    # and log them in order
                 for i in range(1,6):
                     rospy.loginfo("robot" + str(i) + " (% .4f,% .4f) ", \
                     self._robot_position[i][0], self._robot_position[i][1])
