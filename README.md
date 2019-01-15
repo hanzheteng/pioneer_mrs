@@ -1,6 +1,6 @@
 # pioneer_mrs
 ## 1. Introduction
-A ROS package for Pioneer 3-AT Multi-Robot Systems. 
+A ROS package for Pioneer 3-AT Multi-Robot Systems.
 
 This is a flexible experimental platform for multi-robot systems (MRS). Should there be any problem, please feel free to contact maintainer [@hanzheteng](https://github.com/hanzheteng) or open a new issue in this repository.
 
@@ -38,7 +38,7 @@ Before using this package to drive your robots, you may configure your platform 
 5. Your commander (laptop) is able to SSH to all robots via public key (instead of password)
 6. Onboard computers are able to get access to the microcontroller via serial post (add user to *dialout* group)
 
-For detailed information regarding how to set up the whole system, please refer to the [wiki](https://github.com/hanzheteng/pioneer_mrs/wiki) page.
+***For detailed information regarding how to set up the whole system, please refer to [the wiki page](https://github.com/hanzheteng/pioneer_mrs/wiki).***
 
 Moreover, there are two suggestions which is not necessary for this system but may be useful for your development.
 - You may install a [teamviewer](https://www.teamviewer.us/) software on your laptop and robots so that you can remote login into your onboard computers.
@@ -248,7 +248,7 @@ Note: `robot#` represents any robot label from 1 to 5.
       <br> float32 x
       <br> float32 y </td>
     <td> Formation.action </td>
-    <td> set a goal of total steps 
+    <td> set a goal of total steps
       <br> get feedbacks of positions in each step </td>
   </tr>
 </table>
@@ -268,5 +268,5 @@ Most of the time, you can use `roswtf` command to diagnose your problem.
 3. If prompt `The following roslaunch remote processes failed to register: * xxxx (timeout 10.0s)`, your network may have a problem, including hosts file, ROS_MASTER_URI, env loader, etc. (e.g. the hostname of your laptop was not exactly the same as you set in /etc/hosts file)
 4. Launch sequence problem: service servers need to start earlier than clients. (C++ only, python solved this problem by `wait_for_service` function)
 5. If prompt `cannot launch node of type [some python file]`, you need to add execute permission to that python file.
-6. Getting input and printing output in the same command line window will result in a kind of shfiting of output lines.
-
+6. Getting input and printing output in the same command line window will result in a kind of shifting of output lines.
+7. If prompt `Unable to establish ssh connection to [user@robot:22]: Server u'robot' not found in known_hosts`, make sure you do ssh connection to your robot via RSA key. Then just remove the `~/.ssh/known_hosts` file and ssh again to your robot.
