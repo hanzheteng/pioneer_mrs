@@ -270,3 +270,4 @@ Most of the time, you can use `roswtf` command to diagnose your problem.
 5. If prompt `cannot launch node of type [some python file]`, you need to add execute permission to that python file.
 6. Getting input and printing output in the same command line window will result in a kind of shifting of output lines.
 7. If prompt `Unable to establish ssh connection to [user@robot:22]: Server u'robot' not found in known_hosts`, make sure you do ssh connection to your robot via RSA key. Then just remove the `~/.ssh/known_hosts` file and ssh again to your robot.
+8. If Gazebo crashed with `segmentation fault` right after `waitForService: Service [/gazebo/set_physics_properties] has not been advertised, waiting... `, turn off `3D Accleration` in VirtualBox display settings.
