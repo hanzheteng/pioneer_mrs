@@ -5,7 +5,7 @@
   <description>The pioneer_mrs ROS package for Pioneer 3-AT Multi-Robot Systems</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
-  <maintainer email="hanzheteng@outlook.com">Hanzhe Teng</maintainer>
+  <maintainer email="hteng007@ucr.edu">Hanzhe Teng</maintainer>
 
   <!-- One license tag required, multiple allowed, one license per tag -->
   <license>MIT</license>
@@ -13,11 +13,12 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/pioneer_mrs</url> -->
+  <url type="website">http://wiki.ros.org/pioneer_mrs</url>
+  <url type="bugtracker">https://github.com/hanzheteng/pioneer_mrs/issues</url> 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
   <!-- Authors do not have to be maintainers, but could be -->
-  <author email="hanzheteng@outlook.com">Hanzhe Teng</author>
+  <author email="hteng007@ucr.edu">Hanzhe Teng</author>
 
   <!-- The *depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
@@ -27,45 +28,36 @@
   <!--   Note that this is equivalent to the following: -->
   <!--   <build_depend>roscpp</build_depend> -->
   <!--   <exec_depend>roscpp</exec_depend> -->
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>tf</depend>
+  <depend>geometry_msgs</depend>
+  <depend>message_generation</depend>
+  <depend>dynamic_reconfigure</depend>
+  <depend>actionlib</depend>
+  <depend>actionlib_msgs</depend>
 
   <!-- Use build_depend for packages you need at compile time: -->
-  <build_depend>roscpp</build_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>nav_msgs</build_depend>
-  <build_depend>tf</build_depend>
-  <build_depend>geometry_msgs</build_depend>
-  <build_depend>message_generation</build_depend>
-  <build_depend>dynamic_reconfigure</build_depend>
-  <build_depend>actionlib</build_depend>
-  <build_depend>actionlib_msgs</build_depend>
 
   <!-- Use build_export_depend for packages you need in order to build against this package: -->
-  <build_export_depend>roscpp</build_export_depend>
-  <build_export_depend>rospy</build_export_depend>
-  <build_export_depend>std_msgs</build_export_depend>
-  <build_export_depend>message_generation</build_export_depend>
 
   <!-- Use buildtool_depend for build tool packages: -->
   <buildtool_depend>catkin</buildtool_depend>
 
   <!-- Use exec_depend for packages you need at runtime: -->
-  <exec_depend>roscpp</exec_depend>
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>nav_msgs</exec_depend>
-  <exec_depend>tf</exec_depend>
-  <exec_depend>geometry_msgs</exec_depend>
-  <exec_depend>message_runtime</exec_depend>
-  <exec_depend>dynamic_reconfigure</exec_depend>
-  <exec_depend>actionlib</exec_depend>
-  <exec_depend>actionlib_msgs</exec_depend>
-
-  <exec_depend>rosaria</exec_depend>
-  <exec_depend>vicon_bridge</exec_depend>
   <exec_depend>gazebo_ros</exec_depend>
-  <exec_depend>amr_robots_gazebo</exec_depend>
-  <exec_depend>amr_robots_description</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>message_runtime</exec_depend>
+
+  <!-- The following packages do not have binary release available in Ubuntu (i.e. cannot be installed by apt-get) -->
+  <!-- Therefore, they cannot be added into rosdep as keys. -->
+  <!-- However, we can install them from source by using wstool and dependencies.rosinstall -->
+  <!-- <exec_depend>rosaria</exec_depend> -->
+  <!-- <exec_depend>vicon_bridge</exec_depend> -->
+  <!-- <exec_depend>amr_robots_gazebo</exec_depend> -->
+  <!-- <exec_depend>amr_robots_description</exec_depend> -->
 
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->

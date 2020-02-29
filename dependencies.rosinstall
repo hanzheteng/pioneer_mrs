@@ -1,0 +1,15 @@
+# NOTE: This is an example source dependency, remove it before adding the
+# dependencies.rosinstall file to your repository.
+#
+# The 'wstool' utility is the preferred way of adding elements to this file. To
+# add all repositories from an existing workspace, you can use `wstool scrape`.
+
+- git:
+    local-name: amr-ros-config
+    uri: https://github.com/MobileRobots/amr-ros-config
+- git:
+    local-name: rosaria
+    uri: https://github.com/amor-ros-pkg/rosaria
+- git:
+    local-name: vicon_bridge
+    uri: https://github.com/ethz-asl/vicon_bridge
