@@ -1,4 +1,4 @@
-# pioneer_mrs
+# pioneer_mrs [![Build Status](https://travis-ci.com/hanzheteng/pioneer_mrs.svg?branch=master)](https://travis-ci.com/hanzheteng/pioneer_mrs)
 ## 1. Introduction
 A ROS package for Pioneer 3-AT Multi-Robot Systems.
 
